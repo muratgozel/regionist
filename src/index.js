@@ -1,19 +1,9 @@
-const LocalStoragePro = require('local-storage-pro')
-const jstz = require('locale-util/data/jstz')
-const timezonesByCountry = require('locale-util/data/extra/timezonesByCountry.json')
-const countryOfficialLanguages = require('locale-util/data/extra/countryOfficialLanguages.json')
-const callingCodesByCountry = require('locale-util/data/core/phoneNumberMetadata.json')
-const currencyCodesByCountry = require('locale-util/data/extra/currencyCodesByCountry.json')
+import localStoragePro from 'local-storage-pro'
+import {jstz} from 'locale-util'
+import {phoneNumberMetadata} from 'locale-util/data/core'
+import {timezonesByCountry, countryOfficialLanguages, currencyCodesByCountry} from 'locale-util/data/extra'
 
 function Region() {
-  this.i18nData = {
-    timezonesByCountry: timezonesByCountry,
-    countryOfficialLanguages: countryOfficialLanguages,
-    callingCodesByCountry: callingCodesByCountry,
-    currencyCodesByCountry: currencyCodesByCountry
-  }
-  this.jstz = jstz
-  this.store = new LocalStoragePro()
   this.storeKeyName = 'region'
   this.prevParams = null
 
@@ -29,15 +19,15 @@ function Region() {
   this.languages = []
 }
 
-Region.prototype.guess = function guess() {
+Region.prototype.guess = function guess(opts = {remember: true}) {
   this.parse()
 
-  const prevParams = this.store.getItem(this.storeKeyName)
+  const prevParams = opts.remember ? localStoragePro.getItem(this.storeKeyName) : null
   if (prevParams) {
     this.prevParams = JSON.parse(prevParams)
   }
 
-  this.store.setItem(this.storeKeyName, JSON.stringify( this.get() ))
+  if (opts.remember) localStoragePro.setItem(this.storeKeyName, JSON.stringify( this.get() ))
 }
 
 Region.prototype.get = function get() {
@@ -78,7 +68,7 @@ Region.prototype.isLocaleChanged = function isLocaleChanged() {
 
 Region.prototype.parse = function parse() {
   // guess timezone
-  const timezone = this.jstz.determine().name()
+  const timezone = jstz.determine().name()
   if (typeof timezone == 'string' && timezone.length > 0) {
     this.timezone = timezone
   }
@@ -124,7 +114,6 @@ Region.prototype.parse = function parse() {
   if (this.timezone) {
     const tz = this.timezone
     const tzl = tz.toLowerCase()
-    const {timezonesByCountry} = this.i18nData
     const timezoneCountries = Object
       .keys(timezonesByCountry)
       .filter(function(countryCode) {
@@ -142,7 +131,6 @@ Region.prototype.parse = function parse() {
   // trust country and find user nativeLanguage
   if (this.country && this.languages) {
     const countryCode = this.country
-    const {countryOfficialLanguages} = this.i18nData
     if (countryOfficialLanguages[countryCode]) {
       const countryLanguages = countryOfficialLanguages[countryCode]
       const countryPrimaryLanguage = countryLanguages[0]
@@ -157,20 +145,20 @@ Region.prototype.parse = function parse() {
   // calling code
   if (
     this.country &&
-    this.i18nData.callingCodesByCountry.hasOwnProperty(this.country)
+    phoneNumberMetadata.hasOwnProperty(this.country)
   ) {
-    this.callingCode = this.i18nData.callingCodesByCountry[this.country]
+    this.callingCode = phoneNumberMetadata[this.country]
   }
 
   // currency code
   if (
     this.country &&
-    this.i18nData.currencyCodesByCountry.hasOwnProperty(this.country)
+    currencyCodesByCountry.hasOwnProperty(this.country)
   ) {
-    this.currency = this.i18nData.currencyCodesByCountry[this.country]
+    this.currency = currencyCodesByCountry[this.country]
   }
 
   return;
 }
 
-module.exports = Region
+export default new Region()
