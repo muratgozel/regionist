@@ -93,14 +93,12 @@ Region.prototype.parse = function parse() {
   const locales = []
   for (var i = 0; i < languagesList.length; i++) {
     const parts = languagesList[i].split('-')
-    if (parts.length === 1) languages.push( parts[0].toLowerCase() )
-    else if (parts.length > 1) {
-      languages.push( parts[0].toLowerCase() )
-      locales.push( parts[0].toLowerCase() + '-' + parts[1].toUpperCase() )
-
-      // set also country if it doesn't set before
-      if (!this.country) this.country = parts[1].toUpperCase()
-    }
+    const l = parts[0].toLowerCase()
+    const c = parts.length > 1 ? parts[1].toUpperCase() : undefined
+    const lc = parts.length > 1 ? l + '_' + c : undefined
+    if (languages.indexOf(l) === -1) languages.push(l)
+    if (lc && locales.indexOf(lc) === -1) locales.push(lc)
+    if (lc && !this.country) this.country = c
   }
 
   if (languages.length > 0) {
@@ -108,7 +106,7 @@ Region.prototype.parse = function parse() {
     this.nativeLanguage = languages[0]
     this.languages = languages
   }
-  if (locales.length > 0) this.locales = locales
+  this.locales = locales
 
   // find country from timezone
   if (this.timezone) {
@@ -122,25 +120,17 @@ Region.prototype.parse = function parse() {
         return matches && matches.length > 0
       })
     if (timezoneCountries && timezoneCountries.length > 0) {
-      // the country found from timezone has more priority the one from user agent
+      // the country found from timezone is prior the one from user agent
       // so replace the value if exist
-      this.country = timezoneCountries[0]
+      this.country = timezoneCountries[0].toUpperCase()
+      // trust country and find user nativeLanguage
+      this.nativeLanguage = countryOfficialLanguages[this.country][0]
+      const newLocale = this.nativeLanguage + '_' + this.country
+      if (this.locales.indexOf(newLocale) === -1) this.locales.unshift(newLocale)
     }
   }
 
-  // trust country and find user nativeLanguage
-  if (this.country && this.languages) {
-    const countryCode = this.country
-    if (countryOfficialLanguages[countryCode]) {
-      const countryLanguages = countryOfficialLanguages[countryCode]
-      const countryPrimaryLanguage = countryLanguages[0]
-      if (this.languages.indexOf(countryPrimaryLanguage) !== -1) {
-        this.nativeLanguage = countryPrimaryLanguage
-      }
-    }
-
-    this.locale = (this.nativeLanguage || this.preferredLanguage) + '-' + this.country
-  }
+  this.locale = this.locales[0]
 
   // calling code
   if (

@@ -68,16 +68,16 @@ This is an auto-generated report that shows the type, name and size of the bundl
 [comment]: # (DISTRIBUTIONS_REPORT_START)
 ```js
 [
-  "regionist.amd.js (289.38 KB)",
-  "regionist.amd.polyfilled.js (303.04 KB)",
-  "regionist.cjs.js (289.39 KB)",
-  "regionist.cjs.polyfilled.js (303.05 KB)",
-  "regionist.es.js (289.32 KB)",
-  "regionist.es.polyfilled.js (302.98 KB)",
-  "regionist.iife.js (289.38 KB)",
-  "regionist.iife.polyfilled.js (303.04 KB)",
-  "regionist.umd.js (289.63 KB)",
-  "regionist.umd.polyfilled.js (303.28 KB)"
+  "regionist.amd.js (289.35 KB)",
+  "regionist.amd.polyfilled.js (303.00 KB)",
+  "regionist.cjs.js (289.35 KB)",
+  "regionist.cjs.polyfilled.js (303.01 KB)",
+  "regionist.es.js (289.29 KB)",
+  "regionist.es.polyfilled.js (302.94 KB)",
+  "regionist.iife.js (289.34 KB)",
+  "regionist.iife.polyfilled.js (303.00 KB)",
+  "regionist.umd.js (289.59 KB)",
+  "regionist.umd.polyfilled.js (303.25 KB)"
 ]
 ```
 [comment]: # (DISTRIBUTIONS_REPORT_END)

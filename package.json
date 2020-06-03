@@ -1,6 +1,6 @@
 {
   "name": "regionist",
-  "version": "1.1.0",
+  "version": "1.1.1",
   "description": "Regional parameters guesser.",
   "main": "dist/regionist.cjs.js",
   "scripts": {
