@@ -1,7 +1,7 @@
 {
   "name": "regionist",
-  "version": "1.1.1",
-  "description": "Regional parameters guesser.",
+  "version": "2.0.0",
+  "description": "Finds and remembers regional parameters of web users in a most reliable way.",
   "main": "dist/regionist.cjs.js",
   "scripts": {
     "test": "NODE_ENV=test jasmine --config=spec/config/jasmine.json",
@@ -34,23 +34,23 @@
   },
   "homepage": "https://github.com/muratgozel/regionist#readme",
   "dependencies": {
-    "local-storage-pro": "^1.1.1",
-    "locale-util": "^1.0.4"
+    "locale-util": "^2.0.5"
   },
   "devDependencies": {
-    "@babel/cli": "^7.10.1",
-    "@babel/core": "^7.9.0",
-    "@babel/preset-env": "^7.9.5",
-    "@rollup/plugin-commonjs": "^11.1.0",
-    "@rollup/plugin-json": "^4.0.3",
-    "@rollup/plugin-node-resolve": "^7.1.3",
-    "core-js": "^3.6.5",
-    "jasmine": "^3.5.0",
-    "jsdom": "^16.2.2",
-    "rollup": "^2.6.1",
+    "@babel/cli": "^7.12.10",
+    "@babel/core": "^7.12.10",
+    "@babel/preset-env": "^7.12.11",
+    "@rollup/plugin-commonjs": "^17.0.0",
+    "@rollup/plugin-json": "^4.1.0",
+    "@rollup/plugin-node-resolve": "^11.1.0",
+    "colors": "^1.4.0",
+    "core-js": "^3.8.2",
+    "jasmine": "^3.6.3",
+    "jsdom": "^16.4.0",
+    "rollup": "^2.36.2",
     "rollup-plugin-babel": "^4.4.0",
-    "rollup-plugin-terser": "^5.3.0",
-    "semver": "^7.3.2",
-    "yargs": "^15.3.1"
+    "rollup-plugin-terser": "^7.0.2",
+    "semver": "^7.3.4",
+    "yargs": "^16.2.0"
   }
 }

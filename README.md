@@ -1,12 +1,27 @@
 # regionist
-Regional parameters guesser.
+Finds and remembers regional parameters of web users in a most reliable way.
 
 ![NPM](https://img.shields.io/npm/l/regionist)
 [![npm version](https://badge.fury.io/js/regionist.svg)](https://badge.fury.io/js/regionist)
 ![npm bundle size](https://img.shields.io/bundlephobia/min/regionist)
 ![npm](https://img.shields.io/npm/dy/regionist)
 
-Guesses timezone, country, native language, preferred language, currency, calling code and locale of the visitor.
+This package relies on two trust source:
+1. The excellent timezone library jstz.
+2. The browser's navigator object.
+
+After a successfully guess, you will get:
+```js
+{
+  timezone: 'Europe/Istanbul',
+  country: 'TR',
+  nativeLanguage: 'tr',
+  preferredLanguage: 'en',
+  locale: 'tr_TR',
+  currencyCode: 'TRY',
+  callingCode: '90'
+}
+```
 
 ## Install
 ```sh
@@ -15,47 +30,60 @@ npm i regionist
 
 ## Import
 There are different types of distributions depending on your use case. Essentially, the package can be imported via require:
-
 ```js
 const regionist = require('regionist')
 ```
+See `dist` folder for other distributions.
 
-## Use
-Guess:
+## Usage
+Just:
 ```js
 regionist.guess()
 ```
-Get results:
+and get the results:
 ```js
-const results = regionist.get()
+const params = regionist.get()
 {
   timezone: 'Europe/Istanbul',
   country: 'TR',
   nativeLanguage: 'tr',
   preferredLanguage: 'en',
-  currency: 'TRY',
-  callingCode: '90',
   locale: 'tr_TR',
-  locales: ['en_US', 'tr_TR'],
-  languages: ['en', 'tr']
+  currencyCode: 'TRY',
+  callingCode: '90'
 }
 ```
-The user uses its browser in english but the timezone get from the browser has been set to Istanbul, therefore the module set the country of the user to the TR.
-### Remember Previous Guess
-If you would like to track user's region across visits in different timeframes use remember option:
+### Remember The Previous Guess
+If you would like to track user's regional params across visits in different timeframes use remember option:
 ```js
-regionist.guess({remember: true})
+regionist.guess({remember: true/*false by default*/})
 ```
-And to compare if something changed:
+To compare if something has changed:
 ```js
 regionist.isTimezoneChanged() // returns boolean
-regionist.isLocaleChanged() // returns boolean
+regionist.isCountryChanged() // returns boolean
 ```
-This feature provided by a dependency [local-storage-pro][76e81095].
+Comparison methods return:
+1. `true` if the parameter persisted before and changed.
+2. `null` if the parameter doesn't persisted before.
+3. `false` if the parameter persisted before and not changed.
+
+Remembering feature uses `window.localStorage` api.
+### Sample Use Case - Setting Application Locale
+Say your application supports the following locales: en_US, tr_TR and you would like load translation files according to the locale of the user:
+```js
+const supportedLocales = ['en_US', 'tr_TR']
+regionist.guess()
+const chosenLocale = regionist.chooseFrom(supportedLocales)
+```
+The result will be one of supported locales or `undefined`. So it's better if you do:
+```js
+const chosenLocale = regionist.chooseFrom(supportedLocales) || 'en_US'
+```
 ### Locale Data
-It uses the data from [locale-util][5ed25735] module.
+Country - language - phone number - currency mappings provided by [locale-util][5ed25735] package.
 ### Timezone Detection
-For timezone detection good old [jstz](https://bitbucket.org/pellepim/jstimezonedetect) library be used.
+For timezone detection an excellent [jstz](https://bitbucket.org/pellepim/jstimezonedetect) library be used.
 
   [76e81095]: https://github.com/muratgozel/local-storage-pro "Local Storage Pro"
   [5ed25735]: https://github.com/muratgozel/locale-util "locale-util"
@@ -68,16 +96,16 @@ This is an auto-generated report that shows the type, name and size of the bundl
 [comment]: # (DISTRIBUTIONS_REPORT_START)
 ```js
 [
-  "regionist.amd.js (289.35 KB)",
-  "regionist.amd.polyfilled.js (303.00 KB)",
-  "regionist.cjs.js (289.35 KB)",
-  "regionist.cjs.polyfilled.js (303.01 KB)",
-  "regionist.es.js (289.29 KB)",
-  "regionist.es.polyfilled.js (302.94 KB)",
-  "regionist.iife.js (289.34 KB)",
-  "regionist.iife.polyfilled.js (303.00 KB)",
-  "regionist.umd.js (289.59 KB)",
-  "regionist.umd.polyfilled.js (303.25 KB)"
+  "regionist.amd.js (35.02 KB)",
+  "regionist.amd.polyfilled.js (49.07 KB)",
+  "regionist.cjs.js (35.03 KB)",
+  "regionist.cjs.polyfilled.js (49.07 KB)",
+  "regionist.es.js (34.99 KB)",
+  "regionist.es.polyfilled.js (49.06 KB)",
+  "regionist.iife.js (35.03 KB)",
+  "regionist.iife.polyfilled.js (49.07 KB)",
+  "regionist.umd.js (35.25 KB)",
+  "regionist.umd.polyfilled.js (49.27 KB)"
 ]
 ```
 [comment]: # (DISTRIBUTIONS_REPORT_END)
@@ -89,19 +117,12 @@ This is an auto-generated report that shows the pollyfils added by core-js to th
 ```js
 // polyfills:
 [
-  "es.symbol",
-  "es.symbol.description",
-  "es.symbol.iterator",
-  "es.array.iterator",
   "es.object.get-prototype-of",
   "es.object.set-prototype-of",
-  "es.object.to-string",
-  "es.reflect.construct",
-  "es.regexp.to-string",
-  "es.string.iterator",
-  "web.dom-collections.iterator",
   "es.array.filter",
   "es.array.index-of",
+  "es.array.map",
+  "es.array.sort",
   "es.function.name",
   "es.object.keys",
   "es.regexp.exec",
@@ -112,11 +133,11 @@ This is an auto-generated report that shows the pollyfils added by core-js to th
   "android": "4.4.3",
   "chrome": "49",
   "edge": "18",
-  "firefox": "52",
+  "firefox": "78",
   "ie": "10",
   "ios": "9.3",
-  "opera": "67",
-  "safari": "11.1",
+  "opera": "71",
+  "safari": "5.1",
   "samsung": "4"
 }
 ```

@@ -5,11 +5,11 @@ const doc = `
 <html>
 <head>
   <meta charset="utf-8">
-  <title>🙏⏳️</title>
+  <title>Test</title>
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 </head>
 <body>
-  <p>This is DOM Scripter.</p>
+  <p></p>
   <noscript id="no-js-msg">No javascript detected. Please turn on Javascript in your browser or try a browser that is capable of running Javascript code.</noscript>
 </body>
 </html>
