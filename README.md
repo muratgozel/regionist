@@ -7,7 +7,7 @@ Guess regional parameters of your users in a most reliable way.
 ![npm](https://img.shields.io/npm/dy/regionist)
 
 In browsers, there is no bullet-proof way to find user's region, language or other local parameters without asking. This module built for to make best guess about these local parameters. It relies on:
-1. The good old timezone detection library [jstz](https://github.com/iansinnott/jstz).
+1. `window.Intl` object with fallback to the good old timezone detection library [jstz](https://github.com/iansinnott/jstz).
 2. The browser's `navigator` object.
 
 Here is what you get after a successful guess:
