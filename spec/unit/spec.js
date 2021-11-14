@@ -1,10 +1,8 @@
-const regionist = require('../../dist/regionist.cjs.js')
+const {regionist} = require('../../dist/browser/cjs/index.js')
 
-describe('Guess', function() {
-  regionist.guess()
+const result = regionist.guess()
 
-  const result = regionist.get()
-
+describe('guess', function() {
   it('country.', () => {
     expect(result.country).toBe('TR')
   })
@@ -31,16 +29,16 @@ describe('Guess', function() {
   })
 })
 
-describe('Choose from', function() {
-  it('nicely formatted locales.', () => {
+describe('pick', function() {
+  it('from nicely formatted locales.', () => {
     const supportedLocales = ['en_US', 'tr_TR']
-    const match = regionist.guess().chooseFrom(supportedLocales)
+    const match = result.pick(supportedLocales)
     expect(match).toBe('tr_TR')
   })
 
-  it('bad formatted locales.', () => {
+  it('from badly formatted locales.', () => {
     const supportedLocales = ['en', 'tr', 'en-us', 'tr-tr']
-    const match = regionist.guess().chooseFrom(supportedLocales)
-    expect(match).toBe('tr-tr')
+    const match = result.pick(supportedLocales)
+    expect(match).toBe('tr_TR')
   })
 })

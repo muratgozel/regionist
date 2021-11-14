@@ -1,42 +1,82 @@
 const {nodeResolve} = require('@rollup/plugin-node-resolve')
 const commonjs = require('@rollup/plugin-commonjs')
-const babel = require('rollup-plugin-babel')
-const json = require('@rollup/plugin-json')
+const {babel} = require('@rollup/plugin-babel')
 const {terser} = require('rollup-plugin-terser')
+const json = require('@rollup/plugin-json')
 
-const suffix = process.env.USE_POLYFILLS == 'on' ? '.polyfilled' : ''
+const babelPlugins=[]
 
-module.exports = {
-  input: 'src/index.js',
-  output: [
-    {
-      format: 'amd',
-      file: 'dist/regionist.amd' + suffix + '.js'
-    },
-    {
-      format: 'cjs',
-      file: 'dist/regionist.cjs' + suffix + '.js'
-    },
-    {
-      format: 'es',
-      file: 'dist/regionist.es' + suffix + '.js'
-    },
-    {
-      format: 'iife',
-      file: 'dist/regionist.iife' + suffix + '.js',
-      name: 'Regionist'
-    },
-    {
-      format: 'umd',
-      file: 'dist/regionist.umd' + suffix + '.js',
-      name: 'Regionist'
-    }
-  ],
-  plugins: [
-    nodeResolve(),
-    commonjs(),
-    babel(),
-    json(),
-    terser()
-  ]
-}
+babelPlugins.push(['@babel/plugin-transform-runtime', {
+  corejs: {version: 3, proposals: true},
+  helpers: true,
+  regenerator: true,
+  absoluteRuntime: false
+}])
+
+module.exports = [
+  {
+    external: [
+      /@babel\/runtime/, /core-js/, /store/, /jstz/
+    ],
+    input: 'src/Regionist.js',
+    output: [
+      {
+        format: 'cjs',
+        file: 'dist/browser/cjs/index.js',
+        sourcemap: true
+      },
+      {
+        format: 'es',
+        file: 'dist/browser/es/index.js',
+        sourcemap: true
+      }
+    ],
+    plugins: [
+      nodeResolve({preferBuiltins: false}),
+      commonjs({sourceMap: true}),
+      json(),
+      babel({
+        babelHelpers: 'runtime',
+        babelrc: false,
+        exclude: ['node_modules/**'],
+        presets: [
+          ['@babel/env', {
+            useBuiltIns: false,
+            debug: false
+          }]
+        ],
+        plugins: babelPlugins
+      })
+    ]
+  },
+  {
+    input: 'src/Regionist.js',
+    output: [
+      {
+        format: 'iife',
+        name: 'regionist',
+        file: 'dist/browser/iife/index.js',
+        sourcemap: true
+      }
+    ],
+    plugins: [
+      nodeResolve({preferBuiltins: false}),
+      commonjs({sourceMap: true}),
+      json(),
+      babel({
+        babelHelpers: 'runtime',
+        babelrc: false,
+        exclude: ['node_modules/**'],
+        presets: [
+          ['@babel/env', {
+            useBuiltIns: 'usage',
+            corejs: {version: 3, proposals: true},
+            debug: false
+          }]
+        ],
+        plugins: babelPlugins
+      }),
+      terser()
+    ]
+  }
+]

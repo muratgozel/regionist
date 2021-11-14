@@ -1,14 +1,22 @@
 {
   "name": "regionist",
   "version": "2.0.0",
-  "description": "Finds and remembers regional parameters of web users in a most reliable way.",
-  "main": "dist/regionist.cjs.js",
+  "description": "Guess regional parameters of your users in a most reliable way.",
+  "exports": {
+    ".": {
+      "import": "./dist/browser/es/index.js",
+      "require": "./dist/browser/cjs/index.js"
+    },
+    "./browser": {
+      "import": "./dist/browser/es/index.js",
+      "require": "./dist/browser/cjs/index.js"
+    }
+  },
+  "main": "./dist/browser/cjs/index.js",
+  "module": "./dist/browser/es/index.js",
   "scripts": {
     "test": "NODE_ENV=test jasmine --config=spec/config/jasmine.json",
-    "build": "USE_POLYFILLS=off rollup --config rollup.config.js && USE_POLYFILLS=on rollup --config rollup.config.js",
-    "gen-babel-report": "node dev/generateBabelPolyfillReport.js",
-    "gen-dist-report": "node dev/generateDistributionReport.js",
-    "commit": "node dev/commit.js commit"
+    "build": "rollup --config rollup.config.js"
   },
   "repository": {
     "type": "git",
@@ -33,24 +41,25 @@
     "url": "https://github.com/muratgozel/regionist/issues"
   },
   "homepage": "https://github.com/muratgozel/regionist#readme",
-  "dependencies": {
-    "locale-util": "^2.0.5"
-  },
   "devDependencies": {
-    "@babel/cli": "^7.12.10",
-    "@babel/core": "^7.12.10",
-    "@babel/preset-env": "^7.12.11",
-    "@rollup/plugin-commonjs": "^17.0.0",
+    "@babel/cli": "^7.15.7",
+    "@babel/core": "^7.15.5",
+    "@babel/plugin-transform-runtime": "^7.15.0",
+    "@babel/preset-env": "^7.15.6",
+    "@rollup/plugin-babel": "^5.3.0",
+    "@rollup/plugin-commonjs": "^21.0.1",
     "@rollup/plugin-json": "^4.1.0",
-    "@rollup/plugin-node-resolve": "^11.1.0",
-    "colors": "^1.4.0",
-    "core-js": "^3.8.2",
-    "jasmine": "^3.6.3",
-    "jsdom": "^16.4.0",
-    "rollup": "^2.36.2",
-    "rollup-plugin-babel": "^4.4.0",
-    "rollup-plugin-terser": "^7.0.2",
-    "semver": "^7.3.4",
-    "yargs": "^16.2.0"
+    "@rollup/plugin-node-resolve": "^13.0.5",
+    "core-js": "^3.18.3",
+    "jasmine": "^3.10.0",
+    "jsdom": "^18.1.0",
+    "rollup": "^2.57.0",
+    "rollup-plugin-terser": "^7.0.2"
+  },
+  "dependencies": {
+    "@babel/runtime": "^7.15.4",
+    "@babel/runtime-corejs3": "^7.15.4",
+    "locale-util": "^2.2.0",
+    "store": "^2.0.12"
   }
 }

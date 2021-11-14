@@ -5,16 +5,25 @@ const doc = `
 <html>
 <head>
   <meta charset="utf-8">
-  <title>Test</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <title>Test Regionist</title>
 </head>
 <body>
-  <p></p>
-  <noscript id="no-js-msg">No javascript detected. Please turn on Javascript in your browser or try a browser that is capable of running Javascript code.</noscript>
+  <p>Test page.</p>
 </body>
 </html>
 `
-global.window = new JSDOM(doc, {url: 'https://frondjs.org'}).window
+global.window = new JSDOM(doc, {url: 'https://github.com'}).window
 global.document = global.window.document
 global.navigator = global.window.navigator
-//window.fetch = () => {json: () => ''}
+global.navigator.languages = ['en-US', 'tr-TR']
+global.window.Intl = {
+  DateTimeFormat: function() {
+    return {
+      resolvedOptions: function() {
+        return {
+          timeZone: 'Europe/Istanbul'
+        }
+      }
+    }
+  }
+}
