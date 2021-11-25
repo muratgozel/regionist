@@ -32,10 +32,10 @@ npm i regionist
 There are exports for **es6**, **cjs** and **umd** environments:
 ```js
 // cjs
-const regionist = require('regionist')
+const {regionist} = require('regionist')
 
 // or es
-import regionist from 'regionist'
+import {regionist} from 'regionist'
 ```
 or inject via script tag:
 ```html
