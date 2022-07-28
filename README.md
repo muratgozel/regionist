@@ -82,6 +82,13 @@ const userAppLocale = result.pick(appSupportedLocales)
 ```
 It returns the first item of the input list at the worst case.
 
+### Pick Locale From Url Path
+It can look for the locale in the `window.location.pathname` with the following pattern: /[locale]/path/to
+```js
+const userAppLocale = result.pickFromUrl(fallback)
+```
+fallback param is what function returns if it can't find any locale in the url path.
+
 ## Locale Data
 Country - language - phone number - currency mappings provided by [locale-util][5ed25735] package. You can actually use them by importing:
 ```js

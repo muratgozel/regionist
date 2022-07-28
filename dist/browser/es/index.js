@@ -3673,13 +3673,14 @@ var Regionist = /*#__PURE__*/function () {
       var _this3 = this;
 
       var localeLikes = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : [];
-      localeLikes = this.formatLocaleLike(localeLikes); // match by order + locale + country + language
+      localeLikes = this.formatLocaleLike(localeLikes); // match by order: locale + country + language
+      // locale match
 
       var matches1 = _filterInstanceProperty(localeLikes).call(localeLikes, function (l) {
         return _this3.locale == l;
       });
 
-      if (matches1 && matches1.length > 0) return matches1[0];
+      if (matches1 && matches1.length > 0) return matches1[0]; // country match
 
       var matches2 = _filterInstanceProperty(localeLikes).call(localeLikes, function (l) {
         var arr = l.split('_');
@@ -3688,7 +3689,7 @@ var Regionist = /*#__PURE__*/function () {
         return false;
       });
 
-      if (matches2 && matches2.length > 0) return matches2[0];
+      if (matches2 && matches2.length > 0) return matches2[0]; // language
 
       var matches3 = _filterInstanceProperty(localeLikes).call(localeLikes, function (l) {
         var arr = l.split('_');
@@ -3700,6 +3701,25 @@ var Regionist = /*#__PURE__*/function () {
 
       if (matches3 && matches3.length > 0) return matches3[0];
       return localeLikes[0];
+    }
+  }, {
+    key: "pickFromUrl",
+    value: function pickFromUrl() {
+      var fallback = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : null;
+
+      try {
+        var _context9;
+
+        var firstPath = _filterInstanceProperty(_context9 = window.location.pathname.split('/')).call(_context9, function (v) {
+          return v;
+        })[0];
+
+        if (firstPath && _classPrivateFieldGet(this, _reLocale).test(firstPath)) {
+          return this.formatLocaleLike(firstPath)[0];
+        }
+      } catch (e) {}
+
+      return this.formatLocaleLike(fallback)[0];
     }
   }]);
 

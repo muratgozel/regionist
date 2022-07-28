@@ -1,6 +1,6 @@
 {
   "name": "regionist",
-  "version": "3.0.1",
+  "version": "3.1.0",
   "description": "Guess regional parameters of your users in a most reliable way.",
   "exports": {
     ".": {

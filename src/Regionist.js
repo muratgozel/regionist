@@ -185,10 +185,13 @@ class Regionist {
   pick(localeLikes=[]) {
     localeLikes = this.formatLocaleLike(localeLikes)
     
-    // match by order + locale + country + language
+    // match by order: locale + country + language
+
+    // locale match
     const matches1 = localeLikes.filter(l => this.locale == l)
     if (matches1 && matches1.length > 0) return matches1[0]
 
+    // country match
     const matches2 = localeLikes.filter(l => {
       const arr = l.split('_')
       const country = arr.length === 2 ? arr[1] : null
@@ -197,6 +200,7 @@ class Regionist {
     })
     if (matches2 && matches2.length > 0) return matches2[0]
 
+    // language
     const matches3 = localeLikes.filter(l => {
       const arr = l.split('_')
       const lang = arr[0]
@@ -207,6 +211,17 @@ class Regionist {
     if (matches3 && matches3.length > 0) return matches3[0]
 
     return localeLikes[0]
+  }
+
+  pickFromUrl(fallback=null) {
+    try {
+      const firstPath = window.location.pathname.split('/').filter(v => v)[0]
+      if (firstPath && this.#reLocale.test(firstPath)) {
+        return this.formatLocaleLike(firstPath)[0]
+      }
+    } catch (e) {}
+
+    return this.formatLocaleLike(fallback)[0]
   }
 }
 
