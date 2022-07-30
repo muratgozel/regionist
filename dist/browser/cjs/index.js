@@ -3685,6 +3685,26 @@ var Regionist = /*#__PURE__*/function () {
 
         return arr[0].toLowerCase();
       });
+    }
+  }, {
+    key: "urlFormat",
+    value: function urlFormat(v) {
+      var arr = v.split(/(_|-)/);
+
+      if (arr.length === 1) {
+        return arr[0].toLowerCase();
+      }
+
+      if (arr.length === 3) {
+        return arr[0].toLowerCase() + '-' + arr[2].toLowerCase();
+      }
+
+      return arr[0].toLowerCase();
+    }
+  }, {
+    key: "isoFormat",
+    value: function isoFormat(value) {
+      return this.formatLocaleLike(value)[0];
     } // picks the best language/locale from a given list
 
   }, {

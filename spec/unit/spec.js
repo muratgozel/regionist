@@ -41,9 +41,21 @@ describe('pick', function() {
     const match = result.pick(supportedLocales)
     expect(match).toBe('tr_TR')
   })
+})
 
+describe('pick based on url', function () {
   it('based on url', () => {
     const locale = result.pickFromUrl('xx-xx')
     expect(locale).toBe('xx_XX')
+  })
+})
+
+describe('format', function () {
+  it('url', () => {
+    expect(result.urlFormat('xx_XX')).toBe('xx-xx')
+  })
+
+  it('iso', () => {
+    expect(result.isoFormat('xx-xx')).toBe('xx_XX')
   })
 })

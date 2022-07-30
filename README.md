@@ -89,6 +89,12 @@ const userAppLocale = result.pickFromUrl(fallback)
 ```
 fallback param is what function returns if it can't find any locale in the url path.
 
+### Format Locale Input
+```js
+result.urlFormat('en_US') == 'en-us'
+result.isoFormat('en-us') == 'en_US'
+```
+
 ## Locale Data
 Country - language - phone number - currency mappings provided by [locale-util][5ed25735] package. You can actually use them by importing:
 ```js
