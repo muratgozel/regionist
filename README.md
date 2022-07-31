@@ -85,7 +85,8 @@ It returns the first item of the input list at the worst case.
 ### Pick Locale From Url Path
 It can look for the locale in the `window.location.pathname` with the following pattern: /[locale]/path/to
 ```js
-const userAppLocale = result.pickFromUrl(fallback)
+const userAppLocale = result.pickFromUrl(fallback, path?)
+// path is optional because it is window.location.pathname by default
 ```
 fallback param is what function returns if it can't find any locale in the url path.
 

@@ -8,8 +8,14 @@ import store from 'store/dist/store.modern.js'
 class Regionist {
   #browserLocaleLikes = []
   #localStorageIdentifier = '_regionist'
-  #reLocale = /[a-z]{2,3}((-|_)[a-zA-Z]{2})?/
   #prev = null
+
+  languages = Object.keys(countryLanguages).reduce(function (memo, c) {
+    countryLanguages[c].map(l => memo.indexOf(l) === -1 ? memo.push(l) : null)
+    return memo
+  }, [])
+
+  countries = Object.keys(countryLanguages)
 
   constructor(params={}) {
     this.timezone = params.timezone || null
@@ -156,52 +162,75 @@ class Regionist {
     else if (n.userLanguage) result = [n.userLanguage]
     else return result
 
-    return this.formatLocaleLike(result)
+    return result.map(r => this.isoFormat(r))
   }
 
-  formatLocaleLike(value) {
-    value = Array.isArray(value) ? value : [value]
-
-    return value
-      .filter(v => {
-        return typeof v == 'string' && this.#reLocale.test(v)
-      })
-      .map(v => {
-        const arr = v.split(/(_|-)/)
-
-        if (arr.length === 1) {
-          return arr[0].toLowerCase()
-        }
-
-        if (arr.length === 3) {
-          return arr[0].toLowerCase() + '_' + arr[2].toUpperCase()
-        }
-
-        return arr[0].toLowerCase()
-      })
+  isLanguage(v) {
+    return this.languages.indexOf(v) > -1
   }
 
-  urlFormat(v) {
+  isCountry(v) {
+    if (typeof v != 'string') return false
+    return this.countries.indexOf(v.toUpperCase()) > -1
+  }
+
+  isLocale(v) {
+    if (!v) return false
+    if (typeof v != 'string') return false
+    if (v.length < 2) return false
+
     const arr = v.split(/(_|-)/)
 
     if (arr.length === 1) {
-      return arr[0].toLowerCase()
+      if (!this.isLanguage(arr[0])) return false
+
+      return true
     }
 
     if (arr.length === 3) {
-      return arr[0].toLowerCase() + '-' + arr[2].toLowerCase()
+      if (!this.isLanguage(arr[0])) return false
+      if (!this.isCountry(arr[2])) return false
+
+      return true
     }
 
-    return arr[0].toLowerCase()
+    return false
   }
 
-  isoFormat(value) {
-    return this.formatLocaleLike(value)[0]
+  format(v) {
+    const arr = v.split(/(_|-)/)
+
+    if (arr.length === 1) {
+      return {lang: arr[0], country: null}
+    }
+
+    if (arr.length === 3) {
+      return {lang: arr[0], country: arr[2].toUpperCase()}
+    }
+
+    return {lang: null, country: null}
+  }
+
+  urlFormat(v) {
+    if (!this.isLocale(v)) return null;
+
+    const formatted = this.format(v)
+
+    return formatted.lang + (formatted.country ? '-' + formatted.country.toLowerCase() : '')
+  }
+
+  isoFormat(v) {
+    if (!this.isLocale(v)) return null;
+
+    const formatted = this.format(v)
+
+    return formatted.lang + (formatted.country ? '_' + formatted.country : '')
   }
 
   // picks the best language/locale from a given list
   pick(localeLikes=[]) {
-    localeLikes = this.formatLocaleLike(localeLikes)
+    localeLikes = Array.isArray(localeLikes) ? localeLikes : [localeLikes]
+    localeLikes = localeLikes.filter(l => this.isLocale(l)).map(l => this.isoFormat(l))
     
     // match by order: locale + country + language
 
@@ -231,15 +260,16 @@ class Regionist {
     return localeLikes[0]
   }
 
-  pickFromUrl(fallback=null) {
+  pickFromUrl(fallback=null, path=null) {
+    const p = path || window.location.pathname
     try {
-      const firstPath = window.location.pathname.split('/').filter(v => v)[0]
-      if (firstPath && this.#reLocale.test(firstPath)) {
-        return this.formatLocaleLike(firstPath)[0]
+      const firstPath = p.split('/').filter(v => v)[0]
+      if (firstPath && this.isLocale(firstPath)) {
+        return this.isoFormat(firstPath)
       }
     } catch (e) {}
 
-    return this.formatLocaleLike(fallback)[0]
+    return this.isoFormat(fallback)
   }
 }
 

@@ -1,13 +1,14 @@
 import _classCallCheck from '@babel/runtime-corejs3/helpers/classCallCheck';
 import _createClass from '@babel/runtime-corejs3/helpers/createClass';
+import _defineProperty from '@babel/runtime-corejs3/helpers/defineProperty';
 import _classPrivateFieldGet from '@babel/runtime-corejs3/helpers/classPrivateFieldGet';
 import _classPrivateFieldSet from '@babel/runtime-corejs3/helpers/classPrivateFieldSet';
 import _reduceInstanceProperty from '@babel/runtime-corejs3/core-js/instance/reduce';
 import _Object$keys from '@babel/runtime-corejs3/core-js/object/keys';
 import _mapInstanceProperty from '@babel/runtime-corejs3/core-js/instance/map';
+import _indexOfInstanceProperty from '@babel/runtime-corejs3/core-js/instance/index-of';
 import _sliceInstanceProperty from '@babel/runtime-corejs3/core-js/instance/slice';
 import _filterInstanceProperty from '@babel/runtime-corejs3/core-js/instance/filter';
-import _indexOfInstanceProperty from '@babel/runtime-corejs3/core-js/instance/index-of';
 import _WeakMap from '@babel/runtime-corejs3/core-js/weak-map';
 import jstz from 'locale-util/data/jstz/index.js';
 import store from 'store/dist/store.modern.js';
@@ -3430,12 +3431,12 @@ var _browserLocaleLikes = /*#__PURE__*/new _WeakMap();
 
 var _localStorageIdentifier = /*#__PURE__*/new _WeakMap();
 
-var _reLocale = /*#__PURE__*/new _WeakMap();
-
 var _prev = /*#__PURE__*/new _WeakMap();
 
 var Regionist = /*#__PURE__*/function () {
   function Regionist() {
+    var _context;
+
     var params = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : {};
 
     _classCallCheck(this, Regionist);
@@ -3450,15 +3451,22 @@ var Regionist = /*#__PURE__*/function () {
       value: '_regionist'
     });
 
-    _classPrivateFieldInitSpec(this, _reLocale, {
-      writable: true,
-      value: /[a-z]{2,3}((-|_)[a-zA-Z]{2})?/
-    });
-
     _classPrivateFieldInitSpec(this, _prev, {
       writable: true,
       value: null
     });
+
+    _defineProperty(this, "languages", _reduceInstanceProperty(_context = _Object$keys(countryLanguages)).call(_context, function (memo, c) {
+      var _context2;
+
+      _mapInstanceProperty(_context2 = countryLanguages[c]).call(_context2, function (l) {
+        return _indexOfInstanceProperty(memo).call(memo, l) === -1 ? memo.push(l) : null;
+      });
+
+      return memo;
+    }, []));
+
+    _defineProperty(this, "countries", _Object$keys(countryLanguages));
 
     this.timezone = params.timezone || null;
     this.country = params.country || null;
@@ -3489,11 +3497,11 @@ var Regionist = /*#__PURE__*/function () {
       this.currencyCode = this.findCurrencyCode();
 
       if (opts.remember) {
-        var _context;
+        var _context3;
 
         _classPrivateFieldSet(this, _prev, new Regionist(store.get(_classPrivateFieldGet(this, _localStorageIdentifier))));
 
-        store.set(_classPrivateFieldGet(this, _localStorageIdentifier), _reduceInstanceProperty(_context = _Object$keys(this)).call(_context, function (m, k) {
+        store.set(_classPrivateFieldGet(this, _localStorageIdentifier), _reduceInstanceProperty(_context3 = _Object$keys(this)).call(_context3, function (m, k) {
           return m[k] = _this[k];
         }, {}));
       }
@@ -3532,9 +3540,9 @@ var Regionist = /*#__PURE__*/function () {
   }, {
     key: "findPreferredLanguage",
     value: function findPreferredLanguage() {
-      var _context2;
+      var _context4;
 
-      var languagesWithinhNavigator = _mapInstanceProperty(_context2 = _classPrivateFieldGet(this, _browserLocaleLikes)).call(_context2, function (l) {
+      var languagesWithinhNavigator = _mapInstanceProperty(_context4 = _classPrivateFieldGet(this, _browserLocaleLikes)).call(_context4, function (l) {
         return _sliceInstanceProperty(l).call(l, 0, 2);
       });
 
@@ -3544,9 +3552,9 @@ var Regionist = /*#__PURE__*/function () {
   }, {
     key: "findNativeLanguage",
     value: function findNativeLanguage() {
-      var _context3;
+      var _context5;
 
-      var languagesWithinhNavigator = _mapInstanceProperty(_context3 = _classPrivateFieldGet(this, _browserLocaleLikes)).call(_context3, function (l) {
+      var languagesWithinhNavigator = _mapInstanceProperty(_context5 = _classPrivateFieldGet(this, _browserLocaleLikes)).call(_context5, function (l) {
         return _sliceInstanceProperty(l).call(l, 0, 2);
       });
 
@@ -3569,19 +3577,19 @@ var Regionist = /*#__PURE__*/function () {
   }, {
     key: "guessCountry",
     value: function guessCountry() {
-      var _context6, _context7;
+      var _context8, _context9;
 
       // guess based on timezone first
       var countriesWithinSameTimezone = [];
 
       if (this.timezone) {
-        var _context4;
+        var _context6;
 
         var tz = this.timezone.toLowerCase();
-        countriesWithinSameTimezone = _filterInstanceProperty(_context4 = _Object$keys(timezones)).call(_context4, function (country) {
-          var _context5;
+        countriesWithinSameTimezone = _filterInstanceProperty(_context6 = _Object$keys(timezones)).call(_context6, function (country) {
+          var _context7;
 
-          var m = _filterInstanceProperty(_context5 = timezones[country]).call(_context5, function (_tz) {
+          var m = _filterInstanceProperty(_context7 = timezones[country]).call(_context7, function (_tz) {
             return _tz.toLowerCase() == tz;
           });
 
@@ -3594,9 +3602,9 @@ var Regionist = /*#__PURE__*/function () {
       } // guess based on navigator
 
 
-      var countriesWithinNavigator = _mapInstanceProperty(_context6 = _filterInstanceProperty(_context7 = _classPrivateFieldGet(this, _browserLocaleLikes)).call(_context7, function (l) {
+      var countriesWithinNavigator = _mapInstanceProperty(_context8 = _filterInstanceProperty(_context9 = _classPrivateFieldGet(this, _browserLocaleLikes)).call(_context9, function (l) {
         return _indexOfInstanceProperty(l).call(l, '_') !== -1;
-      })).call(_context6, function (l) {
+      })).call(_context8, function (l) {
         return l.split('_')[1];
       });
 
@@ -3637,63 +3645,104 @@ var Regionist = /*#__PURE__*/function () {
   }, {
     key: "generateLocaleLikesFromNavigator",
     value: function generateLocaleLikesFromNavigator() {
+      var _this2 = this;
+
       var result = [];
       if (!('navigator' in window)) return result;
       var n = window.navigator;
       if ('languages' in n && n.languages && n.languages.length > 0) result = n.languages;else if (n.language) result = [n.language];else if (n.userLanguage) result = [n.userLanguage];else return result;
-      return this.formatLocaleLike(result);
+      return _mapInstanceProperty(result).call(result, function (r) {
+        return _this2.isoFormat(r);
+      });
     }
   }, {
-    key: "formatLocaleLike",
-    value: function formatLocaleLike(value) {
-      var _context8,
-          _this2 = this;
+    key: "isLanguage",
+    value: function isLanguage(v) {
+      var _context10;
 
-      value = Array.isArray(value) ? value : [value];
-      return _mapInstanceProperty(_context8 = _filterInstanceProperty(value).call(value, function (v) {
-        return typeof v == 'string' && _classPrivateFieldGet(_this2, _reLocale).test(v);
-      })).call(_context8, function (v) {
-        var arr = v.split(/(_|-)/);
+      return _indexOfInstanceProperty(_context10 = this.languages).call(_context10, v) > -1;
+    }
+  }, {
+    key: "isCountry",
+    value: function isCountry(v) {
+      var _context11;
 
-        if (arr.length === 1) {
-          return arr[0].toLowerCase();
-        }
+      if (typeof v != 'string') return false;
+      return _indexOfInstanceProperty(_context11 = this.countries).call(_context11, v.toUpperCase()) > -1;
+    }
+  }, {
+    key: "isLocale",
+    value: function isLocale(v) {
+      if (!v) return false;
+      if (typeof v != 'string') return false;
+      if (v.length < 2) return false;
+      var arr = v.split(/(_|-)/);
 
-        if (arr.length === 3) {
-          return arr[0].toLowerCase() + '_' + arr[2].toUpperCase();
-        }
+      if (arr.length === 1) {
+        if (!this.isLanguage(arr[0])) return false;
+        return true;
+      }
 
-        return arr[0].toLowerCase();
-      });
+      if (arr.length === 3) {
+        if (!this.isLanguage(arr[0])) return false;
+        if (!this.isCountry(arr[2])) return false;
+        return true;
+      }
+
+      return false;
+    }
+  }, {
+    key: "format",
+    value: function format(v) {
+      var arr = v.split(/(_|-)/);
+
+      if (arr.length === 1) {
+        return {
+          lang: arr[0],
+          country: null
+        };
+      }
+
+      if (arr.length === 3) {
+        return {
+          lang: arr[0],
+          country: arr[2].toUpperCase()
+        };
+      }
+
+      return {
+        lang: null,
+        country: null
+      };
     }
   }, {
     key: "urlFormat",
     value: function urlFormat(v) {
-      var arr = v.split(/(_|-)/);
-
-      if (arr.length === 1) {
-        return arr[0].toLowerCase();
-      }
-
-      if (arr.length === 3) {
-        return arr[0].toLowerCase() + '-' + arr[2].toLowerCase();
-      }
-
-      return arr[0].toLowerCase();
+      if (!this.isLocale(v)) return null;
+      var formatted = this.format(v);
+      return formatted.lang + (formatted.country ? '-' + formatted.country.toLowerCase() : '');
     }
   }, {
     key: "isoFormat",
-    value: function isoFormat(value) {
-      return this.formatLocaleLike(value)[0];
+    value: function isoFormat(v) {
+      if (!this.isLocale(v)) return null;
+      var formatted = this.format(v);
+      return formatted.lang + (formatted.country ? '_' + formatted.country : '');
     } // picks the best language/locale from a given list
 
   }, {
     key: "pick",
     value: function pick() {
-      var _this3 = this;
+      var _context12,
+          _this3 = this;
 
       var localeLikes = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : [];
-      localeLikes = this.formatLocaleLike(localeLikes); // match by order: locale + country + language
+      localeLikes = Array.isArray(localeLikes) ? localeLikes : [localeLikes];
+      localeLikes = _mapInstanceProperty(_context12 = _filterInstanceProperty(localeLikes).call(localeLikes, function (l) {
+        return _this3.isLocale(l);
+      })).call(_context12, function (l) {
+        return _this3.isoFormat(l);
+      }); // match by order: locale + country + language
       // locale match
 
       var matches1 = _filterInstanceProperty(localeLikes).call(localeLikes, function (l) {
@@ -3726,20 +3775,22 @@ var Regionist = /*#__PURE__*/function () {
     key: "pickFromUrl",
     value: function pickFromUrl() {
       var fallback = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : null;
+      var path = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : null;
+      var p = path || window.location.pathname;
 
       try {
-        var _context9;
+        var _context13;
 
-        var firstPath = _filterInstanceProperty(_context9 = window.location.pathname.split('/')).call(_context9, function (v) {
+        var firstPath = _filterInstanceProperty(_context13 = p.split('/')).call(_context13, function (v) {
           return v;
         })[0];
 
-        if (firstPath && _classPrivateFieldGet(this, _reLocale).test(firstPath)) {
-          return this.formatLocaleLike(firstPath)[0];
+        if (firstPath && this.isLocale(firstPath)) {
+          return this.isoFormat(firstPath);
         }
       } catch (e) {}
 
-      return this.formatLocaleLike(fallback)[0];
+      return this.isoFormat(fallback);
     }
   }]);
 
