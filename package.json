@@ -1,6 +1,6 @@
 {
   "name": "regionist",
-  "version": "v4.0.0",
+  "version": "v4.0.1",
   "description": "Guesses the user's regional parameters on-device, in a reliable way.",
   "type": "module",
   "types": "types",

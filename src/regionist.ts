@@ -1,3 +1,4 @@
+import type { GuessResult } from 'regionist'
 import type {
     CountryCode,
     LanguageCode,
@@ -67,7 +68,7 @@ export class Regionist {
         return this
     }
 
-    toObject(): object {
+    toObject(): GuessResult {
         return {
             timezone: this.timezone,
             country: this.country,

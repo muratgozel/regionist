@@ -9,6 +9,16 @@ declare module 'regionist' {
         Timezone
     } from 'locale-util'
 
+    export interface GuessResult {
+        timezone: string | null
+        country: CountryCode | null
+        nativeLanguage: LanguageCode | null
+        preferredLanguage: LanguageCode | null
+        locale: string | null
+        callingCode: number | null
+        currencyCode: CurrencyCode | null
+    }
+
     export interface Regionist {
         timezone: string | null
         country: CountryCode | null
@@ -24,6 +34,7 @@ declare module 'regionist' {
         countryCallingCodes: CountryCallingCodes
         countryCurrencies: CountryCurrencies
         guess(opts = {remember: false}): Regionist
+        toObject(): GuessResult
         findBestMatch(localeLikes: string[] = []): string
         matchUrlPath(path: string, fallback = ''): string
         isArray(v: unknown): v is any[]
