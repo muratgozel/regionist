@@ -1,27 +1,15 @@
 # regionist
-Guess regional parameters of your users in a most reliable way.
+Guesses the user's regional parameters on-device, in a reliable way.
 
-![NPM](https://img.shields.io/npm/l/regionist)
-[![npm version](https://badge.fury.io/js/regionist.svg)](https://badge.fury.io/js/regionist)
-![npm bundle size](https://img.shields.io/bundlephobia/min/regionist)
-![npm](https://img.shields.io/npm/dy/regionist)
+This library relies on the `window` object of the user's browser. It guesses timezone, country, 
+native and preferred languages of the user and also stores currency code and calling code 
+related to its guess. As there is no %100 accurate way of detecting user's regional parameters, 
+this library tries its chance by combinating the outputs of `window.Intl` and `window.navigator` objects.
 
-In browsers, there is no bullet-proof way to find user's region, language or other local parameters without asking. This module built for to make best guess about these local parameters. It relies on:
-1. `window.Intl` object with fallback to the good old timezone detection library [jstz](https://github.com/iansinnott/jstz).
-2. The browser's `navigator` object.
-
-Here is what you get after a successful guess:
-```js
-{
-  timezone: 'Europe/Istanbul',
-  country: 'TR',
-  nativeLanguage: 'tr',
-  preferredLanguage: 'en',
-  locale: 'tr_TR',
-  currencyCode: 'TRY',
-  callingCode: '90'
-}
-```
+There are three main functions of this library:
+1. The guess feature guesses the user's regional parameters.
+2. The remember feature uses local storage to store and compare previous guess with the current one.
+3. The matching feature is a simple way to find the best locale for the user either based on a given list or url path.
 
 ## Install
 ```sh
@@ -29,26 +17,23 @@ npm i regionist
 ```
 
 ## Import
-There are exports for **es6**, **cjs** and **umd** environments:
+There are **es6**, **cjs** and **iife** kind of distributions:
 ```js
 // cjs
 const {regionist} = require('regionist')
 
-// or es
+// es
 import {regionist} from 'regionist'
+
+// iife, accessible through window.regionist
+<script src="https://cdn.jsdelivr.net/npm/regionist@4/dist/browser/iife/index.js" type="text/javascript"></script>
 ```
-or inject via script tag:
-```html
-<script src="https://cdn.jsdelivr.net/npm/regionist@3/dist/browser/iife/index.js" type="text/javascript"></script>
-```
-You can access it via global `window.regionist` when import it via script tag.
 
 ## Usage
-Just do:
 ```js
 const result = regionist.guess()
 
-// result
+// result is an instance of Regionist and has the following props:
 {
   timezone: 'Europe/Istanbul',
   country: 'TR',
@@ -56,57 +41,52 @@ const result = regionist.guess()
   preferredLanguage: 'en',
   locale: 'tr_TR',
   currencyCode: 'TRY',
-  callingCode: '90'
+  callingCode: 90
 }
-```
-Note that `result` is an instance of `Regionist`. So you can call another methods.
+// you can access the only-props object by
+result.toObject()
 
-### Check If User Timezone Have Changed
-Store user parameters in local storage:
-```js
-const result = regionist.guess({remember: true/*false by default*/})
 ```
-When user revisited the page some time later, execute compare function:
+Note that `result` is an instance of `Regionist`. So you can call other methods of the class.
+
+Second main feature of the library is to remember previous result by using local storage of the user's browser:
 ```js
 const result = regionist.guess({remember: true})
-result.isTimezoneChanged() // returns boolean
+
+result.hasCountryChanged() // returns boolean
+result.hasTimezoneChanged() // returns boolean
+
+// the previous guess can also be accessed by
+result.getPreviousGuess()
+
 ```
 
-### Pick Language or Locale From A List
-Regionist can pick the most suitable language/locale for the user from a given list:
+You can find the most appropriate locale for the user by using one of `findBestMatch` and `matchUrlPath` methods:
 ```js
 const result = regionist.guess()
 
-const appSupportedLocales = ['en_US', 'tr_TR']
-const userAppLocale = result.pick(appSupportedLocales)
-```
-It returns the first item of the input list at the worst case.
+// finds best match from a given list of locale-like strings
+// will return 'tr-tr' because user's country is TR and native language is tr
+regionist.findBestMatch(['en-us', 'tr-tr'])
 
-### Pick Locale From Url Path
-It can look for the locale in the `window.location.pathname` with the following pattern: /[locale]/path/to
+// extracts the first portion of the url path and validates it
+// will return 'en-us'
+regionist.matchUrlPath('/en-us/abc')
+
+```
+
+Apart from these features there are some helper methods:
 ```js
-const userAppLocale = result.pickFromUrl(fallback, path?)
-// path is optional because it is window.location.pathname by default
-```
-fallback param is what function returns if it can't find any locale in the url path.
+regionist.isLanguage('en') // returns boolean
+regionist.isCountry('us') // returns boolean
+regionist.isLocale('en-us') // returns boolean
 
-### Format Locale Input
-```js
-result.urlFormat('en_US') == 'en-us'
-result.isoFormat('en-us') == 'en_US'
+regionist.localeToIso('en-us') // returns 'en_US'
+regionist.localeToUrlSafe('en_US') // returns 'en-us'
+
 ```
 
-## Locale Data
-Country - language - phone number - currency mappings provided by [locale-util][5ed25735] package. You can actually use them by importing:
-```js
-import {currencyCodes, callingCodes, countryLanguages, timezones} from 'regionist'
-```
-
-### Timezone Detection
-For timezone detection an excellent [jstz](https://github.com/iansinnott/jstz) library have been used.
-
-  [5ed25735]: https://github.com/muratgozel/locale-util "locale-util"
-
+These helpers was possible thanks to [locale-util](https://github.com/muratgozel/locale-util) package.
 
 ---
 

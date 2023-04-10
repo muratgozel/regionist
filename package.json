@@ -1,7 +1,9 @@
 {
   "name": "regionist",
-  "version": "3.2.1",
-  "description": "Guess regional parameters of your users in a most reliable way.",
+  "version": "v4.0.0",
+  "description": "Guesses the user's regional parameters on-device, in a reliable way.",
+  "type": "module",
+  "types": "types",
   "exports": {
     ".": {
       "import": "./dist/browser/es/index.js",
@@ -15,8 +17,11 @@
   "main": "./dist/browser/cjs/index.js",
   "module": "./dist/browser/es/index.js",
   "scripts": {
-    "test": "NODE_ENV=test jasmine --config=spec/config/jasmine.json",
-    "build": "rollup --config rollup.config.js"
+    "precompile": "rm -rf build/*",
+    "compile": "tsc -p tsconfig.json",
+    "build": "rollup --config rollup.config.js",
+    "test": "NODE_OPTIONS=--experimental-vm-modules jest",
+    "docs": "typedoc --includeVersion --excludePrivate src/regionist.ts types/index.d.ts"
   },
   "repository": {
     "type": "git",
@@ -46,20 +51,33 @@
     "@babel/core": "^7.15.5",
     "@babel/plugin-transform-runtime": "^7.15.0",
     "@babel/preset-env": "^7.15.6",
-    "@rollup/plugin-babel": "^5.3.0",
-    "@rollup/plugin-commonjs": "^21.0.1",
-    "@rollup/plugin-json": "^4.1.0",
-    "@rollup/plugin-node-resolve": "^13.0.5",
+    "@jest/globals": "^29.5.0",
+    "@rollup/plugin-alias": "^5.0.0",
+    "@rollup/plugin-babel": "^6.0.3",
+    "@rollup/plugin-commonjs": "^24.0.1",
+    "@rollup/plugin-json": "^6.0.0",
+    "@rollup/plugin-node-resolve": "^15.0.2",
+    "@rollup/plugin-terser": "^0.4.0",
+    "@types/node": "^18.15.11",
+    "@types/store": "^2.0.2",
+    "@typescript-eslint/eslint-plugin": "^5.57.1",
+    "@typescript-eslint/parser": "^5.57.1",
     "core-js": "^3.18.3",
-    "jasmine": "^3.10.0",
-    "jsdom": "^18.1.0",
-    "rollup": "^2.57.0",
-    "rollup-plugin-terser": "^7.0.2"
+    "eslint": "^8.37.0",
+    "jest": "^29.5.0",
+    "jest-environment-jsdom": "^29.5.0",
+    "node-releaser": "^2.0.0-beta.4",
+    "rollup": "^3.20.2",
+    "typedoc": "^0.24.1",
+    "typescript": "^5.0.4"
   },
   "dependencies": {
     "@babel/runtime": "^7.15.4",
     "@babel/runtime-corejs3": "^7.15.4",
-    "locale-util": "^2.2.0",
+    "@tsconfig/esm": "^1.0.2",
+    "@tsconfig/node18": "^1.0.1",
+    "@tsconfig/strictest": "^2.0.0",
+    "locale-util": "^3.0.11",
     "store": "^2.0.12"
   }
 }
