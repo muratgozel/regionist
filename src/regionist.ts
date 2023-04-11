@@ -9,7 +9,7 @@ import type {
     CountryCurrencies
 } from 'locale-util'
 
-import store from 'store/dist/store.modern'
+import store from 'store/dist/store.modern.js'
 import {
     languageCodes,
     countryCodes,

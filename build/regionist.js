@@ -1,4 +1,4 @@
-import store from 'store/dist/store.modern';
+import store from 'store/dist/store.modern.js';
 import { languageCodes, countryCodes, timezones, countryLanguages, countryCallingCodes, countryCurrencies } from 'locale-util';
 export class Regionist {
     timezone = null;

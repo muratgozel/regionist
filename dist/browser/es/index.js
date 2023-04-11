@@ -11,7 +11,7 @@ import _mapInstanceProperty from '@babel/runtime-corejs3/core-js/instance/map';
 import _Array$from from '@babel/runtime-corejs3/core-js/array/from';
 import _concatInstanceProperty from '@babel/runtime-corejs3/core-js/instance/concat';
 import _WeakMap from '@babel/runtime-corejs3/core-js/weak-map';
-import store from 'store/dist/store.modern';
+import store from 'store/dist/store.modern.js';
 import { languageCodes, countryCodes, timezones, countryLanguages, countryCallingCodes, countryCurrencies } from 'locale-util';
 export { countryCallingCodes, countryCodes, countryCurrencies, countryLanguages, languageCodes, timezones } from 'locale-util';
 

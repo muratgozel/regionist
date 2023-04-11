@@ -13,7 +13,7 @@ var _mapInstanceProperty = require('@babel/runtime-corejs3/core-js/instance/map'
 var _Array$from = require('@babel/runtime-corejs3/core-js/array/from');
 var _concatInstanceProperty = require('@babel/runtime-corejs3/core-js/instance/concat');
 var _WeakMap = require('@babel/runtime-corejs3/core-js/weak-map');
-var store = require('store/dist/store.modern');
+var store = require('store/dist/store.modern.js');
 var localeUtil = require('locale-util');
 
 function _classPrivateFieldInitSpec(obj, privateMap, value) { _checkPrivateRedeclaration(obj, privateMap); privateMap.set(obj, value); }
