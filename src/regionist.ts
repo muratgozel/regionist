@@ -34,6 +34,7 @@ export class Regionist {
     countryCallingCodes: CountryCallingCodes = countryCallingCodes
     countryCurrencies: CountryCurrencies = countryCurrencies
     #localStorageIdentifier = '_regionist'
+    #isDomAvailable = typeof window !== 'undefined'
     #prev: Regionist | null = null
     #browserLocaleLikes: string[] = []
 
@@ -257,6 +258,7 @@ export class Regionist {
      * @returns {string | null}
      */
     guessTimezone(): string | null {
+        if (!this.#isDomAvailable) return null
         try {
             return Intl.DateTimeFormat().resolvedOptions().timeZone
         } catch (error) {
@@ -267,6 +269,7 @@ export class Regionist {
     generateLocaleLikesFromNavigator(): string[] {
         let result: string[] = []
 
+        if (!this.#isDomAvailable) return result
         if (!('navigator' in window)) return result
 
         const n = window.navigator

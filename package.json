@@ -1,24 +1,20 @@
 {
   "name": "regionist",
-  "version": "v4.0.2",
+  "version": "v4.0.3",
   "description": "Guesses the user's regional parameters on-device, in a reliable way.",
   "type": "module",
   "types": "types",
   "exports": {
-    ".": {
-      "import": "./dist/browser/es/index.js",
-      "require": "./dist/browser/cjs/index.js"
-    },
-    "./browser": {
-      "import": "./dist/browser/es/index.js",
-      "require": "./dist/browser/cjs/index.js"
-    }
+    "import": "./dist/regionist.es.js",
+    "require": "./dist/regionist.cjs.js",
+    "default": "./dist/regionist.cjs.js"
   },
-  "main": "./dist/browser/cjs/index.js",
-  "module": "./dist/browser/es/index.js",
+  "main": "./dist/regionist.cjs.js",
+  "module": "./dist/regionist.es.js",
   "scripts": {
     "precompile": "rm -rf build/*",
     "compile": "tsc -p tsconfig.json",
+    "prebuild": "rm -rf dist/*",
     "build": "rollup --config rollup.config.js",
     "test": "NODE_OPTIONS=--experimental-vm-modules jest",
     "docs": "typedoc --includeVersion --excludePrivate src/regionist.ts types/index.d.ts"

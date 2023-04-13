@@ -1,23 +1,25 @@
-import _classCallCheck from '@babel/runtime-corejs3/helpers/classCallCheck';
-import _createClass from '@babel/runtime-corejs3/helpers/createClass';
-import _defineProperty from '@babel/runtime-corejs3/helpers/defineProperty';
-import _classPrivateFieldGet from '@babel/runtime-corejs3/helpers/classPrivateFieldGet';
-import _classPrivateFieldSet from '@babel/runtime-corejs3/helpers/classPrivateFieldSet';
-import _filterInstanceProperty from '@babel/runtime-corejs3/core-js/instance/filter';
-import _findInstanceProperty from '@babel/runtime-corejs3/core-js/instance/find';
-import _includesInstanceProperty from '@babel/runtime-corejs3/core-js/instance/includes';
-import _sliceInstanceProperty from '@babel/runtime-corejs3/core-js/instance/slice';
-import _mapInstanceProperty from '@babel/runtime-corejs3/core-js/instance/map';
-import _Array$from from '@babel/runtime-corejs3/core-js/array/from';
-import _concatInstanceProperty from '@babel/runtime-corejs3/core-js/instance/concat';
-import _WeakMap from '@babel/runtime-corejs3/core-js/weak-map';
-import store from 'store/dist/store.modern.js';
-import { languageCodes, countryCodes, timezones, countryLanguages, countryCallingCodes, countryCurrencies } from 'locale-util';
-export { countryCallingCodes, countryCodes, countryCurrencies, countryLanguages, languageCodes, timezones } from 'locale-util';
+'use strict';
+
+var _classCallCheck = require('@babel/runtime-corejs3/helpers/classCallCheck');
+var _createClass = require('@babel/runtime-corejs3/helpers/createClass');
+var _defineProperty = require('@babel/runtime-corejs3/helpers/defineProperty');
+var _classPrivateFieldGet = require('@babel/runtime-corejs3/helpers/classPrivateFieldGet');
+var _classPrivateFieldSet = require('@babel/runtime-corejs3/helpers/classPrivateFieldSet');
+var _filterInstanceProperty = require('@babel/runtime-corejs3/core-js/instance/filter');
+var _findInstanceProperty = require('@babel/runtime-corejs3/core-js/instance/find');
+var _includesInstanceProperty = require('@babel/runtime-corejs3/core-js/instance/includes');
+var _sliceInstanceProperty = require('@babel/runtime-corejs3/core-js/instance/slice');
+var _mapInstanceProperty = require('@babel/runtime-corejs3/core-js/instance/map');
+var _Array$from = require('@babel/runtime-corejs3/core-js/array/from');
+var _concatInstanceProperty = require('@babel/runtime-corejs3/core-js/instance/concat');
+var _WeakMap = require('@babel/runtime-corejs3/core-js/weak-map');
+var store = require('store/dist/store.modern.js');
+var localeUtil = require('locale-util');
 
 function _classPrivateFieldInitSpec(obj, privateMap, value) { _checkPrivateRedeclaration(obj, privateMap); privateMap.set(obj, value); }
 function _checkPrivateRedeclaration(obj, privateCollection) { if (privateCollection.has(obj)) { throw new TypeError("Cannot initialize the same private elements twice on an object"); } }
 var _localStorageIdentifier = /*#__PURE__*/new _WeakMap();
+var _isDomAvailable = /*#__PURE__*/new _WeakMap();
 var _prev = /*#__PURE__*/new _WeakMap();
 var _browserLocaleLikes = /*#__PURE__*/new _WeakMap();
 var Regionist = /*#__PURE__*/function () {
@@ -30,15 +32,19 @@ var Regionist = /*#__PURE__*/function () {
     _defineProperty(this, "locale", null);
     _defineProperty(this, "callingCode", null);
     _defineProperty(this, "currencyCode", null);
-    _defineProperty(this, "languages", languageCodes);
-    _defineProperty(this, "countries", countryCodes);
-    _defineProperty(this, "timezones", timezones);
-    _defineProperty(this, "countryLanguages", countryLanguages);
-    _defineProperty(this, "countryCallingCodes", countryCallingCodes);
-    _defineProperty(this, "countryCurrencies", countryCurrencies);
+    _defineProperty(this, "languages", localeUtil.languageCodes);
+    _defineProperty(this, "countries", localeUtil.countryCodes);
+    _defineProperty(this, "timezones", localeUtil.timezones);
+    _defineProperty(this, "countryLanguages", localeUtil.countryLanguages);
+    _defineProperty(this, "countryCallingCodes", localeUtil.countryCallingCodes);
+    _defineProperty(this, "countryCurrencies", localeUtil.countryCurrencies);
     _classPrivateFieldInitSpec(this, _localStorageIdentifier, {
       writable: true,
       value: '_regionist'
+    });
+    _classPrivateFieldInitSpec(this, _isDomAvailable, {
+      writable: true,
+      value: typeof window !== 'undefined'
     });
     _classPrivateFieldInitSpec(this, _prev, {
       writable: true,
@@ -299,6 +305,7 @@ var Regionist = /*#__PURE__*/function () {
   }, {
     key: "guessTimezone",
     value: function guessTimezone() {
+      if (!_classPrivateFieldGet(this, _isDomAvailable)) return null;
       try {
         return Intl.DateTimeFormat().resolvedOptions().timeZone;
       } catch (error) {
@@ -310,6 +317,7 @@ var Regionist = /*#__PURE__*/function () {
     value: function generateLocaleLikesFromNavigator() {
       var _this5 = this;
       var result = [];
+      if (!_classPrivateFieldGet(this, _isDomAvailable)) return result;
       if (!('navigator' in window)) return result;
       var n = window.navigator;
       if ('languages' in n && n.languages && n.languages.length > 0) result = _Array$from(n.languages);else if (n.language) result = [n.language];else return result;
@@ -423,5 +431,29 @@ var Regionist = /*#__PURE__*/function () {
 }();
 var regionist = new Regionist();
 
-export { Regionist, regionist };
-//# sourceMappingURL=index.js.map
+Object.defineProperty(exports, 'countryCallingCodes', {
+    enumerable: true,
+    get: function () { return localeUtil.countryCallingCodes; }
+});
+Object.defineProperty(exports, 'countryCodes', {
+    enumerable: true,
+    get: function () { return localeUtil.countryCodes; }
+});
+Object.defineProperty(exports, 'countryCurrencies', {
+    enumerable: true,
+    get: function () { return localeUtil.countryCurrencies; }
+});
+Object.defineProperty(exports, 'countryLanguages', {
+    enumerable: true,
+    get: function () { return localeUtil.countryLanguages; }
+});
+Object.defineProperty(exports, 'languageCodes', {
+    enumerable: true,
+    get: function () { return localeUtil.languageCodes; }
+});
+Object.defineProperty(exports, 'timezones', {
+    enumerable: true,
+    get: function () { return localeUtil.timezones; }
+});
+exports.Regionist = Regionist;
+exports.regionist = regionist;

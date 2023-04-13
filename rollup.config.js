@@ -35,18 +35,18 @@ export default [
         output: [
             {
                 format: 'cjs',
-                file: 'dist/browser/cjs/index.js',
-                sourcemap: true
+                file: 'dist/regionist.cjs.js',
+                sourcemap: false
             },
             {
                 format: 'es',
-                file: 'dist/browser/es/index.js',
-                sourcemap: true
+                file: 'dist/regionist.es.js',
+                sourcemap: false
             }
         ],
         plugins: [
             nodeResolve({preferBuiltins: false}),
-            commonjs({sourceMap: true}),
+            commonjs({sourceMap: false}),
             json(),
             babel({
                 babelHelpers: 'runtime',
@@ -63,7 +63,7 @@ export default [
             {
                 format: 'iife',
                 name: 'regionist',
-                file: 'dist/browser/iife/index.js',
+                file: 'dist/regionist.iife.js',
                 sourcemap: true,
                 globals: {
                     regionist: 'regionist'
