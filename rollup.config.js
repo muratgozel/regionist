@@ -35,7 +35,7 @@ export default [
         output: [
             {
                 format: 'cjs',
-                file: 'dist/regionist.cjs.js',
+                file: 'dist/regionist.cjs',
                 sourcemap: false
             },
             {

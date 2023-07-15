@@ -88,6 +88,9 @@ regionist.localeToUrlSafe('en_US') // returns 'en-us'
 
 These helpers was possible thanks to [locale-util](https://github.com/muratgozel/locale-util) package.
 
+## Contributing
+If you're interested in contributing, read the [CONTRIBUTING.md](https://github.com/muratgozel/muratgozel/blob/main/CONTRIBUTING.md) first, please.
+
 ---
 
 Version management of this repository done by [releaser](https://github.com/muratgozel/node-releaser) 🚀
@@ -96,4 +99,4 @@ Version management of this repository done by [releaser](https://github.com/mura
 
 Thanks for watching 🐬
 
-[![ko-fi](https://www.ko-fi.com/img/githubbutton_sm.svg)](https://ko-fi.com/F1F1RFO7)
+[![Support me on Patreon](https://cdn.muratgozel.com.tr/support-me-on-patreon.v1.png)](https://patreon.com/muratgozel?utm_medium=organic&utm_source=github_repo&utm_campaign=github&utm_content=join_link)

@@ -57,6 +57,8 @@ test('match url path with locale', () => {
     expect(regionist.matchUrlPath('/tr/abc')).toBe('tr')
     expect(regionist.matchUrlPath('/abc')).toBe('')
     expect(regionist.matchUrlPath('/us')).toBe('')
+    expect(regionist.matchUrlPath('/', 'tr_TR')).toBe('tr_TR')
+    expect(regionist.matchUrlPath('/en-us/about', 'tr_TR')).toBe('en-us')
 })
 
 test('remembers the user', () => {
