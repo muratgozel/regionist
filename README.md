@@ -6,87 +6,55 @@ native and preferred languages of the user and also stores currency code and cal
 related to its guess. As there is no %100 accurate way of detecting user's regional parameters, 
 this library tries its chance by combinating the outputs of `window.Intl` and `window.navigator` objects.
 
-There are three main functions of this library:
-1. The guess feature guesses the user's regional parameters.
-2. The remember feature uses local storage to store and compare previous guess with the current one.
-3. The matching feature is a simple way to find the best locale for the user either based on a given list or url path.
-
 ## Install
 ```sh
 npm i regionist
 ```
-
-## Import
-There are **es6**, **cjs** and **iife** kind of distributions:
-```js
-// cjs
-const {regionist} = require('regionist')
-
-// es
-import {regionist} from 'regionist'
-
-// iife, accessible through window.regionist
-<script src="https://cdn.jsdelivr.net/npm/regionist@4/dist/browser/iife/index.js" type="text/javascript"></script>
+or inject with script tag:
+```html
+<script type="module" src="https://cdn.jsdelivr.net/npm/regionist@5/dist/index.js"></script>
 ```
 
 ## Usage
+The guess result is available as you import it.
 ```js
-const result = regionist.guess()
+import { regionist } from 'regionist'
+// or const { regionist } = require('regionist') for cjs
 
-// result is an instance of Regionist and has the following props:
-{
-  timezone: 'Europe/Istanbul',
-  country: 'TR',
-  nativeLanguage: 'tr',
-  preferredLanguage: 'en',
-  locale: 'tr_TR',
-  currencyCode: 'TRY',
-  callingCode: 90
+// guess result:
+regionist.toObject() === {
+    timezone: string | undefined,
+    country: string | undefined,
+    locale: RegionistLocale | undefined,
+    preferredLocale: RegionistLocale | undefined,
+    callingCode: number | undefined,
+    currencyCode: string | undefined
 }
-// you can access the only-props object by
-result.toObject()
-
 ```
-Note that `result` is an instance of `Regionist`. So you can call other methods of the class.
 
-Second main feature of the library is to remember previous result by using local storage of the user's browser:
+### Remember Guesses
+The library uses device's local storage to remember previous results:
 ```js
-const result = regionist.guess({remember: true})
+// have to call .remember() to enable storing
+regionist.remember()
 
-result.hasCountryChanged() // returns boolean
-result.hasTimezoneChanged() // returns boolean
-
-// the previous guess can also be accessed by
-result.getPreviousGuess()
-
+// compare current and previous results:
+regionist.hasCountryBeenChanged()
+regionist.hasTimezoneBeenChanged()
 ```
 
-You can find the most appropriate locale for the user by using one of `findBestMatch` and `matchUrlPath` methods:
+### Find The Closest Locale To The User From Given List Of Locales
 ```js
-const result = regionist.guess()
-
-// finds best match from a given list of locale-like strings
-// will return 'tr-tr' because user's country is TR and native language is tr
-regionist.findBestMatch(['en-us', 'tr-tr'])
-
-// extracts the first portion of the url path and validates it
-// will return 'en-us'
-regionist.matchUrlPath('/en-us/abc')
-
+// assuming user's locale detected as tr_TR
+regionist.findClosestLocale(['en-us', 'tr-tr']) === 'tr-tr'
+regionist.findClosestLocale(['en_US', 'tr_TR']) === 'tr_TR'
 ```
 
-Apart from these features there are some helper methods:
+### Helpers
 ```js
-regionist.isLanguage('en') // returns boolean
-regionist.isCountry('us') // returns boolean
-regionist.isLocale('en-us') // returns boolean
-
-regionist.localeToIso('en-us') // returns 'en_US'
-regionist.localeToUrlSafe('en_US') // returns 'en-us'
-
+regionist.formatLocaleText('en-us', 'iso') === 'en_US'
+regionist.formatLocaleText('en_US', 'url') === 'en-us'
 ```
-
-These helpers was possible thanks to [locale-util](https://github.com/muratgozel/locale-util) package.
 
 ## Contributing
 If you're interested in contributing, read the [CONTRIBUTING.md](https://github.com/muratgozel/muratgozel/blob/main/CONTRIBUTING.md) first, please.

@@ -1,25 +1,19 @@
 {
   "extends": [
     "@tsconfig/strictest/tsconfig",
-    "@tsconfig/node18/tsconfig"
+    "@tsconfig/node20/tsconfig"
   ],
   "compilerOptions": {
-    "outDir": "build",
+    "declaration": true,
     "baseUrl": ".",
+    "rootDir": "src",
+    "resolveJsonModule": true,
     "module": "esnext",
     "moduleResolution": "bundler",
-    "resolveJsonModule": true,
-    "rootDir": "src",
-    "typeRoots": [
-      "node_modules/@types"
-    ],
+    "preserveSymlinks": true,
     "lib": [
-      "es2022",
+      "ESNext",
       "dom"
     ]
-  },
-  "include": [
-    "src/**/*",
-    "./types/store.d.ts"
-  ]
+  }
 }

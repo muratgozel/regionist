@@ -1,97 +1,75 @@
 import {expect, test, jest} from '@jest/globals'
-import {regionist, Regionist} from '../build/regionist.js'
 
 const languagesGetter = jest.spyOn(window.navigator, 'languages', 'get')
 const timezoneGetter = jest.spyOn(window.Intl.DateTimeFormat.prototype, 'resolvedOptions')
 
-test('guesses user country, timezone and languages', () => {
+test('guesses user country, timezone and languages', async () => {
     languagesGetter.mockReturnValue(['en-US', 'tr-TR'])
     timezoneGetter.mockReturnValue({timeZone: 'Europe/Istanbul'})
 
-    regionist.guess()
+    const { regionist } = await import('../dist/index.js')
 
     expect(regionist.timezone).toBe('Europe/Istanbul')
     expect(regionist.country).toBe('TR')
-    expect(regionist.nativeLanguage).toBe('tr')
-    expect(regionist.preferredLanguage).toBe('en')
-    expect(regionist.locale).toBe('tr_TR')
+    expect(regionist.locale).toEqual({ language: 'tr', country: 'TR' })
+    expect(regionist.preferredLocale).toEqual({ language: 'en', country: 'US' })
     expect(regionist.callingCode).toBe(90)
     expect(regionist.currencyCode).toBe('TRY')
 })
 
-test('validates locale strings', () => {
-    expect(regionist.isLanguage('tr')).toBe(true)
-    expect(regionist.isLanguage('xx')).toBe(false)
-    expect(regionist.isCountry('TR')).toBe(true)
-    expect(regionist.isCountry('us')).toBe(true)
-    expect(regionist.isLocale('tr_TR')).toBe(true)
-    expect(regionist.isLocale('en-us')).toBe(true)
-    expect(regionist.isLocale('xx')).toBe(false)
-    expect(regionist.isLocale('xx_US')).toBe(false)
+test('formats locale strings', async () => {
+    const { regionist } = await import('../dist/index.js')
+
+    expect(regionist.formatLocaleText('tr-tr', 'iso')).toBe('tr_TR')
+    expect(regionist.formatLocaleText('en-us', 'iso')).toBe('en_US')
+    expect(regionist.formatLocaleText('en_us', 'iso')).toBe('en_US')
+    expect(regionist.formatLocaleText('en_US', 'iso')).toBe('en_US')
+    expect(regionist.formatLocaleText('abcd', 'iso')).toBe('abcd')
+    expect(regionist.formatLocaleText('en_US', 'url')).toBe('en-us')
+    expect(regionist.formatLocaleText('en-US', 'url')).toBe('en-us')
+    expect(regionist.formatLocaleText('abc', 'url')).toBe('abc')
 })
 
-test('formats locale strings', () => {
-    expect(regionist.localeToIso('tr-tr')).toBe('tr_TR')
-    expect(regionist.localeToIso('en-us')).toBe('en_US')
-    expect(regionist.localeToIso('en_us')).toBe('en_US')
-    expect(regionist.localeToIso('en_US')).toBe('en_US')
-    expect(regionist.localeToIso('abcd')).toBe('')
-    expect(regionist.localeToUrlSafe('en_US')).toBe('en-us')
-    expect(regionist.localeToUrlSafe('en-US')).toBe('en-us')
-    expect(regionist.localeToUrlSafe('abc')).toBe('')
-})
-
-test('finds best match to users locale from a given list', () => {
+test('finds best match to users locale from a given list', async () => {
     languagesGetter.mockReturnValue(['en-US', 'tr-TR'])
     timezoneGetter.mockReturnValue({timeZone: 'Europe/Istanbul'})
 
-    regionist.guess()
+    const { regionist } = await import('../dist/index.js')
 
-    expect(regionist.findBestMatch(['en-us', 'tr-tr'])).toBe('tr-tr')
+    expect(regionist.findClosestLocale(['en-us', 'tr-tr'])).toBe('tr-tr')
+    expect(regionist.findClosestLocale(['en_US', 'tr_TR'])).toBe('tr_TR')
 })
 
-test('match url path with locale', () => {
-    expect(regionist.matchUrlPath('/en-us')).toBe('en-us')
-    expect(regionist.matchUrlPath('/en-us/abc')).toBe('en-us')
-    expect(regionist.matchUrlPath('/qwe/en-us/abc')).toBe('')
-    expect(regionist.matchUrlPath('/tr/abc')).toBe('tr')
-    expect(regionist.matchUrlPath('/abc')).toBe('')
-    expect(regionist.matchUrlPath('/us')).toBe('')
-    expect(regionist.matchUrlPath('/', 'tr_TR')).toBe('tr_TR')
-    expect(regionist.matchUrlPath('/en-us/about', 'tr_TR')).toBe('en-us')
-})
-
-test('remembers the user', () => {
+test('remembers the user', async () => {
     languagesGetter.mockReturnValue(['en-US', 'tr-TR'])
     timezoneGetter.mockReturnValue({timeZone: 'Europe/Istanbul'})
 
-    regionist.guess({remember: true})
-    regionist.guess({remember: true})
+    const { regionist } = await import('../dist/index.js')
 
-    expect(regionist.getPreviousGuess()).toBeInstanceOf(Regionist)
-    expect(regionist.getPreviousGuess()).toMatchObject({
+    regionist.remember()
+    regionist.remember()
+
+    expect(regionist.memory).toMatchObject({
         timezone: 'Europe/Istanbul',
         country: 'TR',
-        nativeLanguage: 'tr',
-        preferredLanguage: 'en',
-        locale: 'tr_TR',
+        locale: { language: 'tr', country: 'TR' },
+        preferredLocale: { language: 'en', country: 'US' },
         callingCode: 90,
         currencyCode: 'TRY'
     })
 })
 
-test('output of the toObject method', () => {
+test('output of the toObject method', async () => {
     languagesGetter.mockReturnValue(['en-US', 'tr-TR'])
     timezoneGetter.mockReturnValue({timeZone: 'Europe/Istanbul'})
 
-    regionist.guess({remember: false})
+    const { regionist } = await import('../dist/index.js')
 
     expect(regionist.toObject()).toMatchObject({
         timezone: 'Europe/Istanbul',
         country: 'TR',
-        nativeLanguage: 'tr',
-        preferredLanguage: 'en',
-        locale: 'tr_TR',
+        locale: { language: 'tr', country: 'TR' },
+        preferredLocale: { language: 'en', country: 'US' },
         callingCode: 90,
         currencyCode: 'TRY'
     })
