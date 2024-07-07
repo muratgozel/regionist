@@ -1,8 +1,6 @@
-declare class Index {
+declare class Regionist {
     isDomAvailable: boolean;
-    localStorageKeyPrefix: string;
     findings: RegionistFindings;
-    memory: RegionistOutput;
     timezone?: string;
     country?: string;
     locale?: RegionistLocale;
@@ -10,10 +8,6 @@ declare class Index {
     callingCode?: number;
     currencyCode?: string;
     constructor();
-    remember(): void;
-    clearMemory(): void;
-    hasCountryBeenChanged(): boolean;
-    hasTimezoneBeenChanged(): boolean;
     findClosestLocale(localeLikes?: string[], defaultLocale?: string): string;
     toObject(): RegionistOutput;
     identify(): void;
@@ -23,7 +17,7 @@ declare class Index {
     convertLocaleObjectToText(obj: RegionistLocale, format?: 'iso' | 'url'): string;
     formatLocaleText(v: string, format?: 'iso' | 'url'): string;
 }
-declare const regionist: Index;
+declare const regionist: Regionist;
 interface RegionistLocale {
     language: string;
     country?: string;
@@ -42,4 +36,4 @@ interface RegionistOutput {
     currencyCode: string | undefined;
 }
 
-export { Index, type RegionistFindings, type RegionistLocale, type RegionistOutput, regionist };
+export { Regionist, type RegionistFindings, type RegionistLocale, type RegionistOutput, regionist };

@@ -1,23 +1,29 @@
-// @ts-check
-
-import eslint from '@eslint/js';
-import tseslint from 'typescript-eslint';
+import eslint from '@eslint/js'
+import tseslint from 'typescript-eslint'
 
 export default tseslint.config(
     eslint.configs.recommended,
     ...tseslint.configs.recommendedTypeChecked,
-    ...tseslint.configs.stylisticTypeChecked,
     {
         languageOptions: {
             parserOptions: {
-                project: true,
+                project: [
+                    './tsconfig.json'
+                ],
                 tsconfigRootDir: import.meta.dirname,
             },
         },
     },
-    // to disable type aware linting for certain subset of files
     {
-        files: ['*.js'],
-        ...tseslint.configs.disableTypeChecked,
+        rules: {
+            '@typescript-eslint/no-unsafe-member-access': ['warn'],
+            '@typescript-eslint/no-namespace': ['warn'],
+            '@typescript-eslint/no-unused-vars': [
+                'warn',
+                { argsIgnorePattern: '^_', varsIgnorePattern: '^_' },
+            ],
+            '@typescript-eslint/no-unsafe-call': ['warn'],
+            'no-constant-condition': ['warn'],
+        },
     },
-);
+)

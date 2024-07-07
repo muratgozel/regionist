@@ -1,18 +1,8 @@
-import store from 'store';
 import { findCountryFromTimezoneName, findCountryLanguages, findCountryTimezones, findCountryCallingCode, findCountryCurrencyCode } from 'locale-util';
 
-class Index {
+class Regionist {
   isDomAvailable = typeof window !== "undefined";
-  localStorageKeyPrefix = "regionist";
   findings = {};
-  memory = {
-    timezone: void 0,
-    country: void 0,
-    locale: void 0,
-    preferredLocale: void 0,
-    callingCode: void 0,
-    currencyCode: void 0
-  };
   timezone;
   country;
   locale;
@@ -23,24 +13,6 @@ class Index {
     this.identify();
     this.guess();
     this.guessFurther();
-  }
-  remember() {
-    const key = this.localStorageKeyPrefix + "_data";
-    const obj = store.get(key);
-    if (obj) {
-      this.memory = obj;
-    }
-    store.set(key, this.toObject());
-  }
-  clearMemory() {
-    const key = this.localStorageKeyPrefix + "_data";
-    store.remove(key);
-  }
-  hasCountryBeenChanged() {
-    return this.memory.country !== this.country;
-  }
-  hasTimezoneBeenChanged() {
-    return this.memory.timezone !== this.timezone;
   }
   findClosestLocale(localeLikes = [], defaultLocale) {
     const formatted = localeLikes.map((lang) => this.convertLocaleLikeTextToObject(lang));
@@ -169,6 +141,7 @@ class Index {
     return parts[0].toLowerCase() + sep + (format === "iso" ? parts[2].toUpperCase() : parts[2].toLowerCase());
   }
 }
-const regionist = new Index();
+const regionist = new Regionist();
 
-export { Index, regionist };
+export { Regionist, regionist };
+//# sourceMappingURL=index.js.map

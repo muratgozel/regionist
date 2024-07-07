@@ -1,6 +1,6 @@
 {
   "name": "regionist",
-  "version": "v5.0.0",
+  "version": "v6.0.0",
   "description": "Guesses the user's regional parameters on-device, in a reliable way.",
   "type": "module",
   "main": "./dist/index.js",
@@ -16,8 +16,8 @@
     }
   },
   "scripts": {
-    "build": "pkgroll --target=es2020 --target=node16",
-    "test": "NODE_OPTIONS=--experimental-vm-modules jest"
+    "build": "pkgroll --target=es2020 --target=node16 --sourcemap --clean-dist",
+    "test": "vitest --browser=chrome --browser.headless"
   },
   "repository": {
     "type": "git",
@@ -43,23 +43,17 @@
   },
   "homepage": "https://github.com/muratgozel/regionist#readme",
   "devDependencies": {
-    "@jest/globals": "^29.7.0",
-    "@swc/core": "^1.4.8",
-    "@swc/jest": "^0.2.36",
-    "@tsconfig/node18": "^18.2.0",
-    "@tsconfig/node20": "^20.1.2",
-    "@tsconfig/strictest": "^2.0.3",
-    "eslint": "^8.57.0",
-    "jest": "^29.7.0",
-    "jest-environment-jsdom": "^29.7.0",
+    "@eslint/js": "^9.6.0",
+    "@vitest/browser": "^1.6.0",
+    "eslint": "^9.6.0",
     "node-releaser": "^2.1.4",
-    "pkgroll": "^2.0.2",
-    "typescript": "^5.4.2",
-    "typescript-eslint": "^7.2.0"
+    "pkgroll": "^2.1.1",
+    "typescript": "^5.5.3",
+    "typescript-eslint": "^7.15.0",
+    "vitest": "^1.6.0",
+    "webdriverio": "^8.39.1"
   },
   "dependencies": {
-    "@types/store": "^2.0.5",
-    "locale-util": "^4.1.0",
-    "store": "^2.0.12"
+    "locale-util": "^4.2.1"
   }
 }

@@ -1,20 +1,9 @@
-import store from 'store'
 import { findCountryLanguages, findCountryFromTimezoneName, findCountryTimezones, findCountryCallingCode, findCountryCurrencyCode } from 'locale-util'
 
-export class Index {
+export class Regionist {
     isDomAvailable = typeof window !== 'undefined'
-    localStorageKeyPrefix = 'regionist'
 
     findings: RegionistFindings = {}
-    memory: RegionistOutput = {
-        timezone: undefined,
-        country: undefined,
-        locale: undefined,
-        preferredLocale: undefined,
-        callingCode: undefined,
-        currencyCode: undefined
-    }
-
     timezone?: string
     country?: string
     locale?: RegionistLocale
@@ -26,30 +15,6 @@ export class Index {
         this.identify()
         this.guess()
         this.guessFurther()
-    }
-
-    remember() {
-        const key = this.localStorageKeyPrefix + '_data'
-        const obj = store.get(key) as RegionistOutput | undefined
-
-        if (obj) {
-            this.memory = obj
-        }
-
-        store.set(key, this.toObject())
-    }
-
-    clearMemory () {
-        const key = this.localStorageKeyPrefix + '_data'
-        store.remove(key)
-    }
-
-    hasCountryBeenChanged(): boolean {
-        return this.memory.country !== this.country
-    }
-
-    hasTimezoneBeenChanged(): boolean {
-        return this.memory.timezone !== this.timezone
     }
 
     findClosestLocale(localeLikes: string[] = [], defaultLocale?: string): string {
@@ -114,7 +79,7 @@ export class Index {
         const formattedWindowNavigatoLanguages = this.findings.windowNavigatorLanguages
             ? this.findings.windowNavigatorLanguages.map((lang) => this.convertLocaleLikeTextToObject(lang))
             : []
-        if (formattedWindowNavigatoLanguages && formattedWindowNavigatoLanguages.length > 0 && formattedWindowNavigatoLanguages[0]!.country) {
+        if (formattedWindowNavigatoLanguages && formattedWindowNavigatoLanguages.length > 0 && formattedWindowNavigatoLanguages[0].country) {
             this.preferredLocale = formattedWindowNavigatoLanguages[0]!
         }
 
@@ -124,7 +89,7 @@ export class Index {
 
             const possibleLanguages = findCountryLanguages(this.country)
             if (possibleLanguages && possibleLanguages.length === 1 && this.country) {
-                this.locale = { language: possibleLanguages[0]!, country: this.country }
+                this.locale = { language: possibleLanguages[0], country: this.country }
                 return
             }
 
@@ -140,7 +105,7 @@ export class Index {
         if (this.preferredLocale && !this.timezone) {
             const possibleTimezones = findCountryTimezones(this.preferredLocale.country!)
             if (possibleTimezones) {
-                this.timezone = possibleTimezones[0]!.country
+                this.timezone = possibleTimezones[0].country
             }
             this.country = this.preferredLocale.country!
             this.locale = this.preferredLocale
@@ -178,11 +143,11 @@ export class Index {
         }
 
         const parts = v.split(/(_|-)/)
-        return parts[0]!.toLowerCase() + sep + (format === 'iso' ? parts[2]!.toUpperCase() : parts[2]!.toLowerCase())
+        return parts[0].toLowerCase() + sep + (format === 'iso' ? parts[2].toUpperCase() : parts[2].toLowerCase())
     }
 }
 
-export const regionist = new Index()
+export const regionist = new Regionist()
 
 export interface RegionistLocale {
     language: string

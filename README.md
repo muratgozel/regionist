@@ -12,7 +12,7 @@ npm i regionist
 ```
 or inject with script tag:
 ```html
-<script type="module" src="https://cdn.jsdelivr.net/npm/regionist@5/dist/index.js"></script>
+<script type="module" src="https://cdn.jsdelivr.net/npm/regionist@6/dist/index.js"></script>
 ```
 
 ## Usage
@@ -30,17 +30,6 @@ regionist.toObject() === {
     callingCode: number | undefined,
     currencyCode: string | undefined
 }
-```
-
-### Remember Guesses
-The library uses device's local storage to remember previous results:
-```js
-// have to call .remember() to enable storing
-regionist.remember()
-
-// compare current and previous results:
-regionist.hasCountryBeenChanged()
-regionist.hasTimezoneBeenChanged()
 ```
 
 ### Find The Closest Locale To The User From Given List Of Locales

@@ -1,19 +1,22 @@
 {
-  "extends": [
-    "@tsconfig/strictest/tsconfig",
-    "@tsconfig/node20/tsconfig"
-  ],
   "compilerOptions": {
-    "declaration": true,
-    "baseUrl": ".",
-    "rootDir": "src",
-    "resolveJsonModule": true,
-    "module": "esnext",
+    "target": "ESNext",
+    "useDefineForClassFields": true,
+    "module": "ESNext",
     "moduleResolution": "bundler",
+    "resolveJsonModule": true,
+    "allowJs": true,
+    "checkJs": true,
+    "isolatedModules": true,
     "preserveSymlinks": true,
+    "verbatimModuleSyntax": true,
+    "sourceMap": true,
+    "strict": true,
+    "esModuleInterop": true,
+    "skipLibCheck": true,
     "lib": [
       "ESNext",
-      "dom"
+      "DOM"
     ]
   }
 }
