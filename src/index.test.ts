@@ -49,8 +49,8 @@ test('find closest locale', () => {
     const r = new Regionist()
     expect(r.findClosestLocale(['en-us', 'tr-tr'])).toBe('en-us')
     expect(r.findClosestLocale(['en_US', 'tr_TR'])).toBe('en_US')
-    expect(r.findClosestLocale(['en-CA', 'en-AU', 'de-DE'])).toBe('en-ca')
-    expect(r.findClosestLocale(['de-DE', 'fr-FR', 'en-US'])).toBe('en-us')
+    expect(r.findClosestLocale(['en-CA', 'en-AU', 'de-DE'])).toBe('en-CA')
+    expect(r.findClosestLocale(['de-DE', 'fr-FR', 'en-US'])).toBe('en-US')
 })
 
 test('format locale text', () => {
@@ -65,4 +65,8 @@ test('format locale text', () => {
     expect(r.formatLocaleText('en_US', 'url')).toBe('en-us')
     expect(r.formatLocaleText('en-us', 'url')).toBe('en-us')
     expect(r.formatLocaleText('en', 'url')).toBe('en')
+    expect(r.formatLocaleText('en-US', 'ietf')).toBe('en-US')
+    expect(r.formatLocaleText('en_US', 'ietf')).toBe('en-US')
+    expect(r.formatLocaleText('en-us', 'ietf')).toBe('en-US')
+    expect(r.formatLocaleText('en', 'ietf')).toBe('en')
 })

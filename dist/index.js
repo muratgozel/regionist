@@ -19,7 +19,7 @@ class Regionist {
     if (!formatted || formatted.length === 0) {
       return defaultLocale ?? localeLikes[0] ?? "";
     }
-    const format = localeLikes.some((text) => text.includes("_")) ? "iso" : "url";
+    const format = localeLikes.some((text) => text.includes("_")) ? "iso" : localeLikes.some((text) => /[A-Z]/.test(text)) ? "ietf" : "url";
     const localeMatch = formatted.find(({ language, country }) => {
       var _a, _b;
       return ((_a = this.locale) == null ? void 0 : _a.language) === language && ((_b = this.locale) == null ? void 0 : _b.country) === country;
@@ -138,7 +138,7 @@ class Regionist {
       return v.toLowerCase();
     }
     const parts = v.split(/(_|-)/);
-    return parts[0].toLowerCase() + sep + (format === "iso" ? parts[2].toUpperCase() : parts[2].toLowerCase());
+    return parts[0].toLowerCase() + sep + (format === "iso" || format === "ietf" ? parts[2].toUpperCase() : parts[2].toLowerCase());
   }
 }
 const regionist = new Regionist();

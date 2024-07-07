@@ -23,7 +23,7 @@ export class Regionist {
             return defaultLocale ?? localeLikes[0] ?? ''
         }
 
-        const format = localeLikes.some((text) => text.includes('_')) ? 'iso' : 'url'
+        const format = localeLikes.some((text) => text.includes('_')) ? 'iso' : localeLikes.some((text) => /[A-Z]/.test(text)) ? 'ietf' : 'url'
 
         const localeMatch = formatted.find(({ language, country }) => this.locale?.language === language && this.locale?.country === country)
         if (localeMatch) return this.convertLocaleObjectToText(localeMatch, format)
@@ -131,11 +131,11 @@ export class Regionist {
         }
     }
 
-    convertLocaleObjectToText (obj: RegionistLocale, format: 'iso' | 'url' = 'iso') {
+    convertLocaleObjectToText (obj: RegionistLocale, format: 'iso' | 'url' | 'ietf' = 'iso') {
         return this.formatLocaleText(obj.language + '-' + obj.country?.toUpperCase(), format)
     }
 
-    formatLocaleText (v: string, format: 'iso' | 'url' = 'iso'): string {
+    formatLocaleText (v: string, format: 'iso' | 'url' | 'ietf' = 'iso'): string {
         const sep = format === 'iso' ? '_' : '-'
 
         if (v.length < 3 || (!v.includes('-') && !v.includes('_'))) {
@@ -143,7 +143,7 @@ export class Regionist {
         }
 
         const parts = v.split(/(_|-)/)
-        return parts[0].toLowerCase() + sep + (format === 'iso' ? parts[2].toUpperCase() : parts[2].toLowerCase())
+        return parts[0].toLowerCase() + sep + (format === 'iso' || format === 'ietf' ? parts[2].toUpperCase() : parts[2].toLowerCase())
     }
 }
 

@@ -14,8 +14,8 @@ declare class Regionist {
     guess(): void;
     guessFurther(): void;
     convertLocaleLikeTextToObject(text: string): RegionistLocale;
-    convertLocaleObjectToText(obj: RegionistLocale, format?: 'iso' | 'url'): string;
-    formatLocaleText(v: string, format?: 'iso' | 'url'): string;
+    convertLocaleObjectToText(obj: RegionistLocale, format?: 'iso' | 'url' | 'ietf'): string;
+    formatLocaleText(v: string, format?: 'iso' | 'url' | 'ietf'): string;
 }
 declare const regionist: Regionist;
 interface RegionistLocale {
