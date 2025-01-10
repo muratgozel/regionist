@@ -1,170 +1,151 @@
-import { findCountryLanguages, findCountryFromTimezoneName, findCountryTimezones, findCountryCallingCode, findCountryCurrencyCode } from 'locale-util'
+import { BROWSER } from "esm-env";
+import timezoneCountryMappingJson from "./timezoneCountryMapping.json";
 
-export class Regionist {
-    isDomAvailable = typeof window !== 'undefined'
+export const regionist = {
+    match,
+    guess,
+};
 
-    findings: RegionistFindings = {}
-    timezone?: string
-    country?: string
-    locale?: RegionistLocale
-    preferredLocale?: RegionistLocale
-    callingCode?: number
-    currencyCode?: string
+export function match(list: string[], fallback: string = "xx-XX") {
+    const _list = list.map((item) => formatListItem(item)).filter((item) => item) as string[];
+    const result = guess();
 
-    constructor () {
-        this.identify()
-        this.guess()
-        this.guessFurther()
+    // full locale match
+    if (result.preferredLocale && _list.some((_locale) => _locale === result.preferredLocale)) {
+        return result.preferredLocale;
     }
 
-    findClosestLocale(localeLikes: string[] = [], defaultLocale?: string): string {
-        const formatted = localeLikes.map((lang) => this.convertLocaleLikeTextToObject(lang))
-        if (!formatted || formatted.length === 0) {
-            return defaultLocale ?? localeLikes[0] ?? ''
-        }
+    // country match
+    if (result.preferredLocale && result.preferredLocale.includes("-")) {
+        const preferredCountry = result.preferredLocale.split("-")[1];
+        const i = _list.findIndex((_locale) =>
+            _locale.includes("-") ? _locale.split("-")[1] === preferredCountry : false,
+        );
 
-        const format = localeLikes.some((text) => text.includes('_')) ? 'iso' : localeLikes.some((text) => /[A-Z]/.test(text)) ? 'ietf' : 'url'
-
-        const localeMatch = formatted.find(({ language, country }) => this.locale?.language === language && this.locale?.country === country)
-        if (localeMatch) return this.convertLocaleObjectToText(localeMatch, format)
-
-        const countryMatch = formatted.find(({ country }) => this.country === country)
-        if (countryMatch) return this.convertLocaleObjectToText(countryMatch, format)
-
-        const languageMatch = formatted.find(({ language }) => this.locale?.language === language)
-        if (languageMatch) return this.convertLocaleObjectToText(languageMatch, format)
-
-        const preferredLocaleMatch = formatted.find(({ language, country }) => this.preferredLocale?.language === language && this.preferredLocale?.country === country)
-        if (preferredLocaleMatch) return this.convertLocaleObjectToText(preferredLocaleMatch, format)
-
-        const preferredCountryMatch = formatted.find(({ country }) => this.preferredLocale?.country === country)
-        if (preferredCountryMatch) return this.convertLocaleObjectToText(preferredCountryMatch, format)
-
-        const preferredLanguageMatch = formatted.find(({ language }) => this.preferredLocale?.language === language)
-        if (preferredLanguageMatch) return this.convertLocaleObjectToText(preferredLanguageMatch, format)
-
-        return defaultLocale ?? ''
-    }
-
-    toObject(): RegionistOutput {
-        return {
-            timezone: this.timezone,
-            country: this.country,
-            locale: this.locale,
-            preferredLocale: this.preferredLocale,
-            callingCode: this.callingCode,
-            currencyCode: this.currencyCode
+        if (i !== -1) {
+            return _list[i];
         }
     }
 
-    identify () {
-        if (!this.isDomAvailable) return
+    if (result.timezoneCountry) {
+        const i = _list.findIndex((_locale) =>
+            _locale.includes("-") ? _locale.split("-")[1] === result.timezoneCountry : false,
+        );
 
-        // read window.Intrl object
+        if (i !== -1) {
+            return _list[i];
+        }
+    }
+
+    // language match
+    if (result.preferredLanguage) {
+        const i = _list.findIndex((_locale) =>
+            _locale.includes("-")
+                ? _locale.split("-")[0] === result.preferredLanguage
+                : _locale === result.preferredLanguage,
+        );
+
+        if (i !== -1) {
+            return _list[i];
+        }
+    }
+
+    return fallback;
+
+    function formatListItem(text: string) {
+        const arr = text.replace("_", "-").split("-");
+
+        if (arr.length === 1) {
+            return text.toLowerCase();
+        }
+
+        if (arr.length === 2) {
+            return arr[0]!.toLowerCase() + "-" + arr[1]!.toUpperCase();
+        }
+
+        return undefined;
+    }
+}
+
+export function guess(global: (Window & typeof globalThis) | undefined = BROWSER ? window : undefined): RegionistGuess {
+    const findings: RegionistFindings = {};
+    const result: RegionistGuess = {};
+
+    if (!global) {
+        return result;
+    }
+
+    readGlobalIntlObject();
+    readGlobalNavigator();
+
+    if ((findings.windowNavigatorLanguages ?? []).length > 0) {
+        const first = findings.windowNavigatorLanguages![0]!;
+        result[first.includes("-") ? "preferredLocale" : "preferredLanguage"] = first;
+
+        if ("preferredLocale" in result) {
+            result.preferredLanguage = result.preferredLocale.split("-")[0]!;
+        }
+    }
+
+    // trust timezone finding, if there is
+    if (findings.windowIntlTimezone) {
+        result.timezone = findings.windowIntlTimezone;
+
+        const possibleCountries =
+            result.timezone in timezoneCountryMappingJson
+                ? timezoneCountryMappingJson[result.timezone as keyof typeof timezoneCountryMappingJson]
+                : [];
+        if (possibleCountries.length === 1) {
+            result.timezoneCountry = possibleCountries[0]!;
+        }
+
+        if (possibleCountries.length > 1 && findings.windowNavigatorLanguages) {
+            const foundCountry = getCountriesFromNavigatorLanguages(findings.windowNavigatorLanguages).find((code) =>
+                possibleCountries.includes(code),
+            );
+            if (foundCountry) {
+                result.timezoneCountry = foundCountry;
+            }
+        }
+    }
+
+    return result;
+
+    function readGlobalIntlObject() {
         try {
-            const result = Intl.DateTimeFormat().resolvedOptions()
-            this.findings.windowIntlTimezone = result.timeZone
-            this.findings.windowIntlLocale = result.locale
-        } catch (error) {
-            return
-        }
-
-        // read window.navigator
-        const n = window.navigator
-        if (('languages' in n) && n.languages && n.languages.length > 0) this.findings.windowNavigatorLanguages = Array.from(n.languages)
-        else if (n.language) this.findings.windowNavigatorLanguages = [n.language]
-    }
-
-    guess () {
-        const formattedWindowNavigatoLanguages = this.findings.windowNavigatorLanguages
-            ? this.findings.windowNavigatorLanguages.map((lang) => this.convertLocaleLikeTextToObject(lang))
-            : []
-        if (formattedWindowNavigatoLanguages && formattedWindowNavigatoLanguages.length > 0 && formattedWindowNavigatoLanguages[0].country) {
-            this.preferredLocale = formattedWindowNavigatoLanguages[0]!
-        }
-
-        if (this.findings.windowIntlTimezone) {
-            this.timezone = this.findings.windowIntlTimezone
-            this.country = findCountryFromTimezoneName(this.timezone)!
-
-            const possibleLanguages = findCountryLanguages(this.country)
-            if (possibleLanguages && possibleLanguages.length === 1 && this.country) {
-                this.locale = { language: possibleLanguages[0], country: this.country }
-                return
-            }
-
-            if (possibleLanguages && possibleLanguages.length > 1 && this.country) {
-                const bestPossibleLanguage = possibleLanguages.find((lang) => formattedWindowNavigatoLanguages.some(({ language }) => language === lang))
-                if (bestPossibleLanguage) {
-                    this.locale = { language: bestPossibleLanguage, country: this.country }
-                    return
-                }
-            }
-        }
-
-        if (this.preferredLocale && !this.timezone) {
-            const possibleTimezones = findCountryTimezones(this.preferredLocale.country!)
-            if (possibleTimezones) {
-                this.timezone = possibleTimezones[0].country
-            }
-            this.country = this.preferredLocale.country!
-            this.locale = this.preferredLocale
-            return
-        }
-
-        return
-    }
-
-    guessFurther () {
-        if (!this.country) return
-        this.callingCode = findCountryCallingCode(this.country)!
-        this.currencyCode = findCountryCurrencyCode(this.country)!
-    }
-
-    convertLocaleLikeTextToObject (text: string): RegionistLocale {
-        if (!text.includes('-') && !text.includes('_')) return { language: text.toLowerCase() }
-
-        const _text = text.replace('-', '_')
-        return {
-            language: _text.slice(0, _text.lastIndexOf('_')),
-            country: _text.slice(_text.lastIndexOf('_') + 1)
+            const obj = global!.Intl.DateTimeFormat().resolvedOptions();
+            findings.windowIntlTimezone = obj.timeZone;
+            findings.windowIntlLocale = obj.locale;
+        } catch (e: unknown) {
+            console.warn(new Error("[regionist]: no global.Intl support", { cause: e }));
+            return;
         }
     }
 
-    convertLocaleObjectToText (obj: RegionistLocale, format: 'iso' | 'url' | 'ietf' = 'iso') {
-        return this.formatLocaleText(obj.language + '-' + obj.country?.toUpperCase(), format)
+    function readGlobalNavigator() {
+        const n = global!.navigator;
+
+        if ("languages" in n && n.languages && n.languages.length > 0) {
+            findings.windowNavigatorLanguages = Array.from(n.languages);
+        } else if (n.language) {
+            findings.windowNavigatorLanguages = [n.language];
+        }
     }
 
-    formatLocaleText (v: string, format: 'iso' | 'url' | 'ietf' = 'iso'): string {
-        const sep = format === 'iso' ? '_' : '-'
-
-        if (v.length < 3 || (!v.includes('-') && !v.includes('_'))) {
-            return v.toLowerCase()
-        }
-
-        const parts = v.split(/(_|-)/)
-        return parts[0].toLowerCase() + sep + (format === 'iso' || format === 'ietf' ? parts[2].toUpperCase() : parts[2].toLowerCase())
+    function getCountriesFromNavigatorLanguages(list: string[]) {
+        return list.filter((text) => text.includes("-")).map((text) => text.split("-")[1]!);
     }
 }
 
-export const regionist = new Regionist()
-
-export interface RegionistLocale {
-    language: string
-    country?: string
+export interface RegionistGuess {
+    preferredLanguage?: string;
+    preferredLocale?: string;
+    timezone?: string;
+    timezoneCountry?: string;
 }
 
-export interface RegionistFindings {
-    windowIntlTimezone?: string
-    windowIntlLocale?: string
-    windowNavigatorLanguages?: string[]
-}
-
-export interface RegionistOutput {
-    timezone: string | undefined
-    country: string | undefined
-    locale: RegionistLocale | undefined
-    preferredLocale: RegionistLocale | undefined
-    callingCode: number | undefined
-    currencyCode: string | undefined
+interface RegionistFindings {
+    windowIntlTimezone?: string;
+    windowIntlLocale?: string;
+    windowNavigatorLanguages?: string[];
 }

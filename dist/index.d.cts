@@ -1,39 +1,14 @@
-declare class Regionist {
-    isDomAvailable: boolean;
-    findings: RegionistFindings;
+declare const regionist: {
+    match: typeof match;
+    guess: typeof guess;
+};
+declare function match(list: string[], fallback?: string): string;
+declare function guess(global?: Window & typeof globalThis | undefined): RegionistGuess;
+interface RegionistGuess {
+    preferredLanguage?: string;
+    preferredLocale?: string;
     timezone?: string;
-    country?: string;
-    locale?: RegionistLocale;
-    preferredLocale?: RegionistLocale;
-    callingCode?: number;
-    currencyCode?: string;
-    constructor();
-    findClosestLocale(localeLikes?: string[], defaultLocale?: string): string;
-    toObject(): RegionistOutput;
-    identify(): void;
-    guess(): void;
-    guessFurther(): void;
-    convertLocaleLikeTextToObject(text: string): RegionistLocale;
-    convertLocaleObjectToText(obj: RegionistLocale, format?: 'iso' | 'url' | 'ietf'): string;
-    formatLocaleText(v: string, format?: 'iso' | 'url' | 'ietf'): string;
-}
-declare const regionist: Regionist;
-interface RegionistLocale {
-    language: string;
-    country?: string;
-}
-interface RegionistFindings {
-    windowIntlTimezone?: string;
-    windowIntlLocale?: string;
-    windowNavigatorLanguages?: string[];
-}
-interface RegionistOutput {
-    timezone: string | undefined;
-    country: string | undefined;
-    locale: RegionistLocale | undefined;
-    preferredLocale: RegionistLocale | undefined;
-    callingCode: number | undefined;
-    currencyCode: string | undefined;
+    timezoneCountry?: string;
 }
 
-export { Regionist, type RegionistFindings, type RegionistLocale, type RegionistOutput, regionist };
+export { type RegionistGuess, guess, match, regionist };
