@@ -1,5 +1,5 @@
 # regionist
-Guesses the user's regional parameters on-device, in a reliable way.
+Guesses the user's regional parameters on-device.
 
 This library relies on the `window` object of the user's browser. It guesses timezone, country, 
 native and preferred languages of the user and also stores currency code and calling code 

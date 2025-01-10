@@ -1,7 +1,7 @@
 {
   "name": "regionist",
   "version": "v6.1.0",
-  "description": "Guesses the user's regional parameters on-device, in a reliable way.",
+  "description": "Guesses the user's regional parameters on-device.",
   "type": "module",
   "main": "./dist/index.js",
   "types": "./dist/index.d.ts",
