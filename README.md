@@ -17,6 +17,7 @@ or inject with script tag:
 ```
 
 ## Usage
+### guess
 ```js
 import { regionist } from 'regionist'
 // or
@@ -31,6 +32,11 @@ console.assert(guessResult === {
     preferredLocale: 'tr-TR', // relies on window.navigator
     preferredLanguage: 'tr' // it's just derived from preferredLocale
 })
+```
+
+### match
+```js
+import { regionist } from 'regionist'
 
 // match, useful for finding the best matching locale against a list of supported locales
 const bestLocale = regionist.match(['az-AZ', 'en-US', 'tr-TR'])
